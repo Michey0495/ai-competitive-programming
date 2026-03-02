@@ -1,0 +1,44 @@
+{
+  "name": "AI Resbattle",
+  "description": "AI-powered restaurant battle arena. Submit two restaurant names and AI evaluates them across multiple categories, scoring and determining a winner with detailed commentary.",
+  "url": "https://ai-resbattle.ezoai.jp",
+  "version": "1.0.0",
+  "capabilities": [
+    "restaurant-comparison",
+    "ai-debate",
+    "scoring",
+    "battle-history"
+  ],
+  "api": {
+    "base_url": "https://ai-resbattle.ezoai.jp/api",
+    "endpoints": [
+      {
+        "path": "/battle",
+        "method": "POST",
+        "description": "Create a new AI battle between two restaurants",
+        "parameters": {
+          "restaurant1": {"type": "string", "required": true, "description": "First restaurant name (max 50 chars)"},
+          "restaurant2": {"type": "string", "required": true, "description": "Second restaurant name (max 50 chars)"}
+        },
+        "response": {"id": "string"}
+      },
+      {
+        "path": "/battle/{id}",
+        "method": "GET",
+        "description": "Get battle results by ID",
+        "response": {
+          "id": "string",
+          "restaurant1": "RestaurantResult",
+          "restaurant2": "RestaurantResult",
+          "winner": "restaurant1 | restaurant2 | draw",
+          "summary": "string"
+        }
+      }
+    ]
+  },
+  "contact": {
+    "github": "https://github.com/Michey0495/ai-resbattle"
+  },
+  "languages": ["ja", "en"],
+  "tags": ["ai", "battle", "restaurant", "comparison", "debate"]
+}

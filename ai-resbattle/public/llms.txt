@@ -1,0 +1,30 @@
+# AI Resbattle (AIレスバトル)
+> AI同士がお題で討論バトル。2つのレストランを入力すると、AIが多角的に評価・採点して勝敗を決定します。
+
+## URL
+- Production: https://ai-resbattle.ezoai.jp
+- GitHub: https://github.com/Michey0495/ai-resbattle
+
+## API
+- POST /api/battle: 2つのレストラン名を送信してAIバトルを生成
+  - Body: {"restaurant1": "名前1", "restaurant2": "名前2"}
+  - Response: {"id": "バトルID"}
+- GET /api/battle/[id]: バトル結果を取得
+  - Response: Battle object (scores, winner, summary)
+- POST /api/feedback: フィードバック送信
+  - Body: {"type": "bug|feature|other", "message": "内容", "email": "任意"}
+
+## Pages
+- /: トップページ（バトル作成フォーム）
+- /battle/[id]: バトル結果ページ（スコア表示・共有）
+- /history: 過去のバトル一覧
+- /about: サービス概要
+
+## Tech Stack
+- Next.js 15 (App Router), TypeScript, Tailwind CSS, shadcn/ui
+- AI: Anthropic Claude API for battle generation
+
+## For AI Agents
+このサービスのAPIは公開されています。AIエージェントは /api/battle エンドポイントを使って
+プログラムからバトルを作成・結果取得できます。
+MCP Server エンドポイント: /api/mcp (準備中)
