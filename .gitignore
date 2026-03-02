@@ -1,0 +1,12 @@
+# Dependencies
+*/node_modules/
+*/.next/
+*/dist/
+*/.turbo/
+
+# Build artifacts
+*/*.tsbuildinfo
+
+# Environment
+*/.env.local
+*/.env*.local
