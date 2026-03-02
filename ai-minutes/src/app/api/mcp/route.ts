@@ -117,7 +117,16 @@ async function handleGetMinutes(args: Record<string, string>) {
 }
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let body: any;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid JSON" },
+      { status: 400 }
+    );
+  }
   const { method } = body;
 
   if (method === "tools/list") {

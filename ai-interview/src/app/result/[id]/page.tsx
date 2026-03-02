@@ -6,7 +6,7 @@ import { ShareButtons } from "@/components/ShareButtons";
 import type { InterviewResult } from "@/types";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://interview.ezoai.jp";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-interview.ezoai.jp";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -164,7 +164,7 @@ export default async function ResultPage({ params }: Props) {
         {/* Footer */}
         <div className="px-6 py-3 bg-white/[0.02] border-t border-white/10 flex justify-between items-center">
           <span className="text-white/30 text-xs">by AI模擬面接</span>
-          <span className="text-white/20 text-xs">interview.ezoai.jp</span>
+          <span className="text-white/20 text-xs">ai-interview.ezoai.jp</span>
         </div>
       </div>
 

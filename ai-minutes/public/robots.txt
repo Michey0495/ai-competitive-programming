@@ -1,4 +1,13 @@
 User-agent: *
 Allow: /
 
+User-agent: GPTBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
 Sitemap: https://minutes.ezoai.jp/sitemap.xml

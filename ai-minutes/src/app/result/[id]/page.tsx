@@ -2,6 +2,7 @@ import { kv } from "@vercel/kv";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { MinutesResult } from "@/lib/types";
+import Link from "next/link";
 import { MinutesResultCard } from "@/components/minutes-result";
 
 type Props = {
@@ -54,26 +55,47 @@ export default async function ResultPage({ params }: Props) {
     notFound();
   }
 
+  const resultSiteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://minutes.ezoai.jp";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: result.input.title || "議事録",
+    description: result.summary.slice(0, 200),
+    datePublished: result.createdAt,
+    url: `${resultSiteUrl}/result/${id}`,
+    publisher: {
+      "@type": "Organization",
+      name: "AI議事録",
+      url: resultSiteUrl,
+    },
+  };
+
   return (
     <main className="min-h-screen bg-black">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
       <div className="max-w-2xl mx-auto px-4 py-12 sm:py-20">
         <header className="text-center mb-10">
-          <a href="/">
+          <Link href="/">
             <h1 className="text-2xl font-bold text-white cursor-pointer hover:opacity-80 transition-all duration-200">
               AI<span className="text-[#10b981]">議事録</span>
             </h1>
-          </a>
+          </Link>
         </header>
 
         <MinutesResultCard result={result} />
 
         <div className="mt-8 text-center">
-          <a
+          <Link
             href="/"
             className="text-[#10b981] hover:underline transition-all duration-200"
           >
             自分の議事録を作成する
-          </a>
+          </Link>
         </div>
 
         <footer className="mt-16 text-center text-sm text-white/30">

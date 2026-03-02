@@ -1,9 +1,9 @@
-import { MetadataRoute } from "next";
-
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-interview.ezoai.jp";
+import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://minutes.ezoai.jp";
+
   return [
     {
       url: siteUrl,

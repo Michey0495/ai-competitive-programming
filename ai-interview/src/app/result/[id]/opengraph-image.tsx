@@ -87,7 +87,7 @@ export default async function OGImage({
             </span>
           </div>
           <span style={{ fontSize: 18, color: "rgba(255,255,255,0.4)" }}>
-            interview.ezoai.jp
+            ai-interview.ezoai.jp
           </span>
         </div>
 

@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://interview.ezoai.jp";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-interview.ezoai.jp";
 
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import type { InterviewResult } from "@/types";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://interview.ezoai.jp";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-interview.ezoai.jp";
 
 const TOOL_DEFINITION = {
   name: "mock_interview",

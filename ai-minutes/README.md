@@ -1,64 +1,109 @@
-# AI議事録 (ai-minutes)
+# AI議事録
 
 会議のメモや発言ログを入力するだけで、AIが構造化された議事録を自動生成するWebサービス。
 
-## URL
-
-- **本番:** https://minutes.ezoai.jp
-- **GitHub:** Michey0495/02dev (path: ai-minutes/)
-
-## 技術スタック
-
-- Next.js 15 (App Router)
-- TypeScript (strict)
-- Tailwind CSS
-- shadcn/ui
-- Anthropic Claude Haiku
-- Vercel KV
-- sonner (toast)
-- nanoid (ID生成)
+**https://minutes.ezoai.jp**
 
 ## 機能
 
-- 会議メモ入力 → AI議事録生成
-- 構造化出力: 要約、決定事項、アクションアイテム、重要ポイント、次回申し送り
-- シェア可能な結果URL + OGP画像自動生成
-- テキストコピー / X(Twitter)シェア / URLコピー
-- レート制限 (5回/10分)
-- MCP Server (`/api/mcp`)
-- A2A Agent Card (`/.well-known/agent.json`)
-- AI向けサイト説明 (`/llms.txt`)
+- 会議メモ / 発言ログ → 構造化議事録の自動生成
+- 要約・決定事項・アクションアイテム・重要ポイントの自動抽出
+- シェア可能な議事録URL（OGP画像付き）
+- MCP Server対応（AIエージェントからの直接利用）
+
+## 技術スタック
+
+- Next.js 16 (App Router)
+- TypeScript (strict)
+- Tailwind CSS v4
+- shadcn/ui
+- Claude Haiku 4.5（議事録生成）
+- Vercel KV（データ保存）
 
 ## セットアップ
 
 ```bash
-cd ai-minutes
 npm install
 cp .env.example .env.local
-# .env.local に環境変数を設定
+# .env.local に API キーを設定
 npm run dev
 ```
 
-## 環境変数
+### 環境変数
 
-| 変数 | 説明 |
-|------|------|
-| `ANTHROPIC_API_KEY` | Anthropic API キー |
-| `KV_REST_API_URL` | Vercel KV REST API URL |
-| `KV_REST_API_TOKEN` | Vercel KV REST API トークン |
-| `NEXT_PUBLIC_SITE_URL` | サイトURL (例: https://minutes.ezoai.jp) |
-| `NEXT_PUBLIC_GA_ID` | Google Analytics ID |
+| 変数名 | 説明 | 必須 |
+|--------|------|------|
+| `ANTHROPIC_API_KEY` | Anthropic API キー | Yes |
+| `KV_REST_API_URL` | Vercel KV REST URL | No (ローカルではKV無しで動作) |
+| `KV_REST_API_TOKEN` | Vercel KV REST トークン | No |
+| `NEXT_PUBLIC_SITE_URL` | サイトURL | No (default: https://minutes.ezoai.jp) |
 
-## 開発進捗
+## API
 
-### Night 1 (2026-03-02) - Core Implementation
-- [x] プロジェクト初期化 (Next.js 15, shadcn/ui)
-- [x] 会議メモ入力フォーム
-- [x] AI議事録生成API (`/api/generate`)
-- [x] 結果表示カード (要約・決定事項・AI・ポイント)
-- [x] シェア可能な結果ページ (`/result/[id]`)
-- [x] OGP画像自動生成 (`/api/og/[id]`)
-- [x] レート制限 (5回/10分)
-- [x] MCP Server (`/api/mcp`)
-- [x] A2A Agent Card, llms.txt, robots.txt
-- [x] ビルド確認
+| エンドポイント | メソッド | 説明 |
+|---------------|---------|------|
+| `/api/generate` | POST | 議事録を生成 |
+| `/api/mcp` | GET | MCP Server情報 + ツール一覧 |
+| `/api/mcp` | POST | MCP Serverツール実行 |
+| `/api/og/[id]` | GET | OGP画像生成 |
+
+## MCP Server
+
+エンドポイント: `https://minutes.ezoai.jp/api/mcp`
+
+| ツール名 | 説明 |
+|----------|------|
+| `generate_minutes` | 会議メモから議事録生成 |
+| `get_minutes` | IDで議事録取得 |
+
+## AI公開チャネル
+
+- `/.well-known/agent.json` - A2A Agent Card
+- `/llms.txt` - AI向けサイト説明
+- `/robots.txt` - クローラー許可設定
+- `/api/mcp` - MCP Server
+
+## デプロイ
+
+Vercel にデプロイ。環境変数を Vercel Dashboard で設定。
+
+## 環境変数（追加）
+
+| 変数名 | 説明 | 必須 |
+|--------|------|------|
+| `NEXT_PUBLIC_GA_ID` | Google Analytics 測定 ID | No |
+
+## 進捗
+
+### Night 1 (初回)
+- プロジェクト初期構築（Next.js 16, Tailwind v4, shadcn/ui）
+- 議事録生成API（Claude Haiku 4.5）
+- フォームUI / 結果表示コンポーネント
+- 結果共有ページ（OGP画像付き）
+- MCP Server API
+- AI公開チャネル（llms.txt, agent.json, robots.txt）
+- レート制限
+
+### Night 2
+- フィードバックAPI（`/api/feedback`）
+- フィードバックウィジェット
+- Google Analytics 対応（`NEXT_PUBLIC_GA_ID`）
+
+### Night 3
+- フィードバック永続化（Vercel KV保存、90日TTL、最新200件管理）
+- JSON-LD構造化データ（トップページ: WebApplication、結果ページ: Article）
+- エラーページ改善（404 not-found.tsx、error.tsx エラーバウンダリ）
+- ローディングアニメーション改善（スピナー + スケルトンUI）
+- 結果ページにloading.tsx（Suspense対応スケルトン）
+- パフォーマンス最適化（viewport設定、poweredByHeader無効化、compress有効化）
+- サイトマップ自動生成（`/sitemap.xml`）
+- robots.txt にAIクローラー（GPTBot, Claude-Web, anthropic-ai）明示追加
+
+### 次回やるべきこと
+- Vercel にデプロイして動作確認
+- OGP画像の改善（フォントの日本語対応確認）
+- アクセシビリティ改善（aria属性の追加）
+
+## ライセンス
+
+Private

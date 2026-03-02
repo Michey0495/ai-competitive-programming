@@ -64,9 +64,9 @@ Parameters:
 - /result/{id} - Interview result with OGP
 
 ## Links
-- Website: https://interview.ezoai.jp
-- Agent Card: https://interview.ezoai.jp/.well-known/agent.json
-- MCP Endpoint: https://interview.ezoai.jp/api/mcp
+- Website: https://ai-interview.ezoai.jp
+- Agent Card: https://ai-interview.ezoai.jp/.well-known/agent.json
+- MCP Endpoint: https://ai-interview.ezoai.jp/api/mcp
 - GitHub: https://github.com/Michey0495/ai-interview
 
 ## Contact

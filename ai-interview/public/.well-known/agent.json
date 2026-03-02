@@ -1,7 +1,7 @@
 {
   "name": "AI模擬面接",
   "description": "AI-powered mock interview evaluation service. Generates interview questions and evaluates candidate readiness with S/A/B/C/D ranking.",
-  "url": "https://interview.ezoai.jp",
+  "url": "https://ai-interview.ezoai.jp",
   "version": "1.0.0",
   "capabilities": {
     "streaming": false,
@@ -11,13 +11,13 @@
     "organization": "Ghostfee",
     "url": "https://github.com/Michey0495"
   },
-  "documentationUrl": "https://interview.ezoai.jp/llms.txt",
+  "documentationUrl": "https://ai-interview.ezoai.jp/llms.txt",
   "authentication": {
     "schemes": ["none"]
   },
   "protocols": {
     "mcp": {
-      "endpoint": "https://interview.ezoai.jp/api/mcp",
+      "endpoint": "https://ai-interview.ezoai.jp/api/mcp",
       "version": "2024-11-05",
       "tools": [
         {

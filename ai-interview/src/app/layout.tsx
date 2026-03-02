@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { FeedbackWidget } from "@/components/FeedbackWidget";
-import { CrossPromo } from "@/components/CrossPromo";
+import CrossPromo from "@/components/CrossPromo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://interview.ezoai.jp";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-interview.ezoai.jp";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -100,9 +100,9 @@ export default function RootLayout({
       >
         <div className="min-h-screen flex flex-col">
           <main className="flex-1">{children}</main>
-          <CrossPromo />
+          <CrossPromo current="AI面接練習" />
           <footer className="text-center py-6 text-white/30 text-sm">
-            <p>AI模擬面接 by Ghostfee &mdash; interview.ezoai.jp</p>
+            <p>AI模擬面接 by Ghostfee &mdash; ai-interview.ezoai.jp</p>
           </footer>
         </div>
         <Toaster

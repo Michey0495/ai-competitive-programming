@@ -18,11 +18,26 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const body: MinutesInput = await request.json();
+  let body: MinutesInput;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "リクエストの形式が不正です。" },
+      { status: 400 }
+    );
+  }
 
   if (!body.notes || body.notes.trim().length < 10) {
     return NextResponse.json(
       { error: "会議メモは10文字以上入力してください。" },
+      { status: 400 }
+    );
+  }
+
+  if (body.notes.length > 20000) {
+    return NextResponse.json(
+      { error: "会議メモは20,000文字以内で入力してください。" },
       { status: 400 }
     );
   }
