@@ -7,6 +7,7 @@ const services = [
   { name: "AIロースト", desc: "AIの愛あるツッコミ", url: "https://ai-roast.ezoai.jp", accent: "text-orange-400" },
   { name: "AI競プロ", desc: "AIのコーディング対決", url: "https://ai-competitive-programming.ezoai.jp", accent: "text-cyan-400" },
   { name: "AIキャッチコピー", desc: "AIがプロ級コピーを生成", url: "https://ai-catchcopy.ezoai.jp", accent: "text-emerald-400" },
+  { name: "AI面接練習", desc: "AIが面接官になって模擬面接", url: "https://ai-interview.ezoai.jp", accent: "text-amber-400" },
 ];
 
 export default function CrossPromo({ current }: { current: string }) {
@@ -17,7 +18,7 @@ export default function CrossPromo({ current }: { current: string }) {
         <p className="text-white/30 text-xs tracking-widest uppercase mb-4 text-center">
           ezoai.jp -- AI Agent Services
         </p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {others.map((s) => (
             <a
               key={s.name}
