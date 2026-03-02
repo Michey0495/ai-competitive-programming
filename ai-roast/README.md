@@ -1,82 +1,67 @@
-# AIロースト
+# AIロースト🔥
 
-プロフィールを入力するとAIが愛のある毒舌ツッコミ（ロースト）を生成するWebサービス。
+プロフィールを入力するとAIが愛のある毒舌ツッコミ（ロースト）をしてくれるWebアプリ。
+結果カードはスクショしてSNSで拡散しやすい設計。
 
-## Try it
+## URL
 
-https://ai-roast.ezoai.jp
+- 本番: https://roast.ezoai.jp
 
-## For AI Agents (MCP)
+## 技術スタック
 
-MCP endpoint: `https://ai-roast.ezoai.jp/api/mcp`
+- Next.js 15 (App Router)
+- TypeScript strict
+- Tailwind CSS
+- shadcn/ui
+- Vercel KV (結果保存)
+- Anthropic Claude Haiku (AI生成)
+- sonner (トースト通知)
+- nanoid (ID生成)
 
-### Available Tools
+## 機能
 
-| Tool | Description |
-|------|-------------|
-| `generate_roast` | プロフィールから愛のある毒舌ツッコミを生成 |
-
-### Example Request
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "generate_roast",
-    "arguments": {
-      "name": "田中太郎",
-      "occupation": "エンジニア",
-      "hobby": "プログラミングとコーヒー",
-      "selfPR": "効率化が好きです"
-    }
-  }
-}
-```
-
-### Example Response
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "content": [
-      {
-        "type": "text",
-        "text": "（愛のある毒舌ツッコミがここに入ります）"
-      }
-    ],
-    "meta": {
-      "resultId": "abc123",
-      "resultUrl": "https://ai-roast.ezoai.jp/result/abc123"
-    }
-  }
-}
-```
-
-### Tool Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `name` | string | Yes | 名前 |
-| `occupation` | string | No | 職業・肩書き |
-| `hobby` | string | No | 趣味 |
-| `selfPR` | string | No | 自己紹介・PR文 |
-
-## Features
-
-- プロフィールから愛のある毒舌ロースト生成
-- 結果カード（SNS映え設計）
-- X(Twitter)シェア + リンクコピー
-- OGP対応の結果ページ
+- プロフィールフォーム（名前・職業・趣味・自己PR・SNSプロフ）
+- Claude Haiku による愛のある毒舌ロースト生成
+- 結果カード（スクショ映え設計）
+- X(Twitter) シェアボタン + リンクコピー
+- OGP対応（結果URLをシェアするとカード表示）
 - レート制限（5回/10分/IP）
+- フィードバックウィジェット
 
-## Tech Stack
+## セットアップ
 
-Next.js 15 / TypeScript / Tailwind CSS / Claude Haiku / Vercel KV / Vercel
+```bash
+npm install
+npm run dev
+```
 
-## License
+## 環境変数
 
-MIT
+```env
+ANTHROPIC_API_KEY=
+KV_REST_API_URL=
+KV_REST_API_TOKEN=
+NEXT_PUBLIC_SITE_URL=https://roast.ezoai.jp
+NEXT_PUBLIC_GA_ID=  # オプション
+GITHUB_TOKEN=       # フィードバック機能用（オプション）
+```
+
+## 進捗
+
+### Night 1 (2026-03-01) ✅
+- [x] Next.js 15 プロジェクト初期化
+- [x] shadcn/ui セットアップ
+- [x] プロフィール入力フォーム
+- [x] AIロースト生成API (`POST /api/roast`)
+- [x] 結果カードページ (`/result/[id]`)
+- [x] シェアボタン（X + リンクコピー）
+- [x] OGP / SEO設定
+- [x] フィードバックウィジェット
+- [x] レート制限
+- [x] `npm run build` ✅
+
+### Night 2 (予定)
+- [ ] Google Analytics 統合強化
+- [ ] ローディングアニメーション改善
+- [ ] 404/エラーページ
+- [ ] 人気のロースト一覧（ランキング）

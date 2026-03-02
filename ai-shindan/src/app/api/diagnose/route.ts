@@ -9,8 +9,6 @@ const client = new Anthropic();
 
 const COLOR_SCHEMES = ["red", "blue", "green", "purple", "yellow", "pink"] as const;
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://shindan.ezoai.jp";
-
 function buildPrompt(answers: Record<number, string>): string {
   const answerLines = questions
     .map((q) => {
@@ -28,6 +26,7 @@ ${answerLines}
 
 {
   "personalityType": "性格タイプ名（例：情熱の指揮者型、共感の守護者型など、ユニークで覚えやすい名前）",
+  "emoji": "タイプを表す絵文字1つ",
   "description": "この性格タイプの詳しい説明（120〜150文字、です・ます調）",
   "traits": ["特徴1", "特徴2", "特徴3", "特徴4", "特徴5"],
   "colorScheme": "red | blue | green | purple | yellow | pink のいずれか（性格に合ったもの）",
@@ -35,15 +34,10 @@ ${answerLines}
 }`;
 }
 
-function generateShareText(result: DiagnosisResult): string {
-  const topTraits = result.traits.slice(0, 3).join("・");
-  return `私の性格タイプは「${result.personalityType}」でした！ ${topTraits} #AI性格診断 ${siteUrl}/result/${result.id}`;
-}
-
 export async function POST(req: NextRequest) {
   try {
     const body: DiagnoseRequest = await req.json();
-    const { answers, agentName, agentDescription, source } = body;
+    const { answers } = body;
 
     if (!answers || typeof answers !== "object") {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
@@ -77,22 +71,17 @@ export async function POST(req: NextRequest) {
     const result: DiagnosisResult = {
       id,
       personalityType: parsed.personalityType ?? "ユニーク型",
+      emoji: parsed.emoji ?? "🌟",
       description: parsed.description ?? "",
       traits: Array.isArray(parsed.traits) ? parsed.traits.slice(0, 6) : [],
       colorScheme,
       advice: parsed.advice ?? "",
       createdAt: Date.now(),
-      ...(agentName && { agentName }),
-      ...(agentDescription && { agentDescription }),
-      source: source ?? "web",
     };
 
-    result.shareText = generateShareText(result);
-
     await kv.set(`result:${id}`, result, { ex: 60 * 60 * 24 * 30 }); // 30日保存
-    await kv.zadd("results:feed", { score: result.createdAt, member: result.id });
 
-    return NextResponse.json({ id, shareText: result.shareText });
+    return NextResponse.json({ id });
   } catch (err) {
     console.error("Diagnose error:", err);
     return NextResponse.json(

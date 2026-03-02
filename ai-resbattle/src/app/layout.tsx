@@ -3,7 +3,6 @@ import { Geist } from "next/font/google";
 import Script from "next/script";
 import { Nav } from "@/components/nav";
 import { FeedbackWidget } from "@/components/feedback-widget";
-import CrossPromo from "@/components/CrossPromo";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"] });
@@ -119,12 +118,11 @@ export default function RootLayout({
           </>
         )}
       </head>
-      <body className={`${geist.className} antialiased min-h-screen`}>
+      <body className={`${geist.className} antialiased min-h-screen bg-background`}>
         <Nav />
         <main className="max-w-4xl mx-auto px-4 py-8">{children}</main>
-        <CrossPromo current="AIレスバトル" />
-        <footer className="border-t border-white/10 mt-16 py-8 text-center text-sm text-white/40">
-          <p>&copy; 2026 AIレスバトル</p>
+        <footer className="border-t mt-16 py-8 text-center text-sm text-muted-foreground">
+          <p>© 2026 AIレスバトル</p>
         </footer>
         <FeedbackWidget repoName="ai-resbattle" />
       </body>

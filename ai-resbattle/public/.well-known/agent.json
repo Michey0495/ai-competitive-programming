@@ -36,20 +36,6 @@
       }
     ]
   },
-  "mcp": {
-    "endpoint": "https://ai-resbattle.ezoai.jp/api/mcp",
-    "transport": "streamable-http",
-    "tools": [
-      {
-        "name": "create_battle",
-        "description": "Create a new AI battle between two restaurants. AI evaluates both across multiple categories, scores them, and determines a winner.",
-        "parameters": {
-          "restaurant1": {"type": "string", "required": true, "description": "First restaurant name (max 50 chars)"},
-          "restaurant2": {"type": "string", "required": true, "description": "Second restaurant name (max 50 chars)"}
-        }
-      }
-    ]
-  },
   "contact": {
     "github": "https://github.com/Michey0495/ai-resbattle"
   },

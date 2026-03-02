@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getRecentBattleIds, getBattle } from "@/lib/db";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Trophy } from "lucide-react";
 import type { Battle } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -19,10 +20,10 @@ export default async function HistoryPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-white">バトル履歴</h1>
+      <h1 className="text-2xl font-bold">バトル履歴</h1>
 
       {battles.length === 0 ? (
-        <p className="text-white/60">まだバトルがありません。</p>
+        <p className="text-muted-foreground">まだバトルがありません。</p>
       ) : (
         <div className="grid gap-3">
           {battles.map((battle) => {
@@ -35,25 +36,26 @@ export default async function HistoryPage() {
 
             return (
               <Link key={battle.id} href={`/battle/${battle.id}`}>
-                <Card className="bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200 cursor-pointer">
+                <Card className="hover:shadow-md transition-shadow">
                   <CardContent className="pt-4 flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-white">
+                      <p className="font-medium">
                         {battle.restaurant1.name}
-                        <span className="text-white/40 mx-2">vs</span>
+                        <span className="text-muted-foreground mx-2">vs</span>
                         {battle.restaurant2.name}
                       </p>
-                      <p className="text-xs text-white/40">
+                      <p className="text-xs text-muted-foreground">
                         {new Date(battle.createdAt).toLocaleDateString("ja-JP")}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
                       {winnerName ? (
-                        <Badge variant="secondary" className="bg-amber-400/10 text-amber-300 border border-amber-400/30">
+                        <Badge variant="secondary">
+                          <Trophy className="h-3 w-3 mr-1" />
                           {winnerName}
                         </Badge>
                       ) : (
-                        <Badge variant="outline" className="border-white/10 text-white/60">引き分け</Badge>
+                        <Badge variant="outline">引き分け</Badge>
                       )}
                     </div>
                   </CardContent>

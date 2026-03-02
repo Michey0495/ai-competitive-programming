@@ -53,9 +53,9 @@ export default async function BattlePage({ params }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <h1 className="text-xl font-bold text-center text-white">
+      <h1 className="text-xl font-bold text-center">
         {battle.restaurant1.name}
-        <span className="text-white/40 mx-2">vs</span>
+        <span className="text-muted-foreground mx-2">vs</span>
         {battle.restaurant2.name}
       </h1>
       <BattleResult battle={battle} url={url} />

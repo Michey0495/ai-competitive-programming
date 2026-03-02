@@ -32,7 +32,7 @@ export async function GET(
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#000000",
+          background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)",
           fontFamily: "sans-serif",
           padding: "40px",
         }}
@@ -40,15 +40,12 @@ export async function GET(
         <div
           style={{
             fontSize: 28,
-            color: "#60a5fa",
+            color: "#a5b4fc",
             marginBottom: 24,
             fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
           }}
         >
-          AIレスバトル
+          ⚔️ AIレスバトル
         </div>
 
         <div
@@ -62,7 +59,7 @@ export async function GET(
           <div
             style={{
               background: "rgba(59,130,246,0.2)",
-              border: "2px solid rgba(96,165,250,0.5)",
+              border: "2px solid #3b82f6",
               borderRadius: "16px",
               padding: "16px 28px",
               color: "#93c5fd",
@@ -85,7 +82,7 @@ export async function GET(
           <div
             style={{
               background: "rgba(249,115,22,0.2)",
-              border: "2px solid rgba(251,146,60,0.5)",
+              border: "2px solid #f97316",
               borderRadius: "16px",
               padding: "16px 28px",
               color: "#fdba74",
@@ -104,16 +101,16 @@ export async function GET(
 
         <div
           style={{
-            background: "rgba(251,191,36,0.15)",
-            border: "2px solid rgba(251,191,36,0.4)",
+            background: "rgba(234,179,8,0.2)",
+            border: "2px solid #eab308",
             borderRadius: "12px",
             padding: "16px 32px",
-            color: "#fbbf24",
+            color: "#fde047",
             fontSize: 28,
             fontWeight: "bold",
           }}
         >
-          勝者: {winnerName}
+          🏆 勝者: {winnerName}
         </div>
       </div>
     ),

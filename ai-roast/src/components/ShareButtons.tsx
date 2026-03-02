@@ -18,23 +18,24 @@ export function ShareButtons({ shareUrl, shareText, name }: Props) {
 
   return (
     <div className="space-y-3">
-      <p className="text-center text-sm font-bold text-white/60">
-        {name}さんのロースト結果をシェアしよう
+      <p className="text-center text-sm font-bold text-gray-600">
+        {name}さんのロースト結果をシェアしよう！
       </p>
       <div className="flex gap-3">
         <a
           href={twitterUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-white font-bold py-3 rounded-lg hover:bg-white/10 transition-all duration-200 cursor-pointer"
+          className="flex-1 flex items-center justify-center gap-2 bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-800 transition-colors"
         >
+          <span>𝕏</span>
           <span>Xでシェア</span>
         </a>
         <button
           onClick={copyLink}
-          className="flex-1 flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-white font-bold py-3 rounded-lg hover:bg-white/10 transition-all duration-200 cursor-pointer"
+          className="flex-1 flex items-center justify-center gap-2 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors"
         >
-          リンクをコピー
+          🔗 リンクをコピー
         </button>
       </div>
     </div>

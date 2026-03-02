@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Swords, Loader2 } from "lucide-react";
 
 export function BattleForm() {
   const router = useRouter();
@@ -43,10 +44,10 @@ export function BattleForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-lg space-y-6 bg-white/5 border border-white/10 rounded-xl p-6">
+    <form onSubmit={handleSubmit} className="w-full max-w-lg space-y-6">
       <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-end">
         <div className="space-y-2">
-          <Label htmlFor="restaurant1" className="text-white/60">レストラン 1</Label>
+          <Label htmlFor="restaurant1">レストラン 1</Label>
           <Input
             id="restaurant1"
             placeholder="例: スターバックス"
@@ -54,16 +55,15 @@ export function BattleForm() {
             onChange={(e) => setRestaurant1(e.target.value)}
             maxLength={50}
             disabled={loading}
-            className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus-visible:border-blue-400 focus-visible:ring-blue-400/30"
           />
         </div>
 
-        <div className="pb-2 text-white/40 font-bold text-sm">
-          VS
+        <div className="pb-2">
+          <Swords className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="restaurant2" className="text-white/60">レストラン 2</Label>
+          <Label htmlFor="restaurant2">レストラン 2</Label>
           <Input
             id="restaurant2"
             placeholder="例: ドトール"
@@ -71,20 +71,29 @@ export function BattleForm() {
             onChange={(e) => setRestaurant2(e.target.value)}
             maxLength={50}
             disabled={loading}
-            className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus-visible:border-blue-400 focus-visible:ring-blue-400/30"
           />
         </div>
       </div>
 
-      {error && <p className="text-sm text-red-400 text-center">{error}</p>}
+      {error && <p className="text-sm text-destructive text-center">{error}</p>}
 
       <Button
         type="submit"
-        className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200"
+        className="w-full"
         size="lg"
         disabled={loading || !restaurant1.trim() || !restaurant2.trim()}
       >
-        {loading ? "AI判定中..." : "バトル開始"}
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            AI判定中...
+          </>
+        ) : (
+          <>
+            <Swords className="mr-2 h-4 w-4" />
+            バトル開始！
+          </>
+        )}
       </Button>
     </form>
   );

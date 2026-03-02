@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Share2, Check } from "lucide-react";
 
 interface ShareButtonsProps {
   restaurant1: string;
@@ -20,7 +21,7 @@ export function ShareButtons({ restaurant1, restaurant2, winner, url }: ShareBut
       ? restaurant2
       : "引き分け";
 
-  const text = `【AIレスバトル】${restaurant1} vs ${restaurant2}の勝者は「${winnerName}」!\n#AIレスバトル`;
+  const text = `【AIレスバトル】${restaurant1} vs ${restaurant2}の勝者は「${winnerName}」！\n#AIレスバトル`;
 
   function shareX() {
     window.open(
@@ -44,30 +45,24 @@ export function ShareButtons({ restaurant1, restaurant2, winner, url }: ShareBut
 
   return (
     <div className="flex flex-wrap gap-2 justify-center">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={shareX}
-        className="bg-white/5 border-white/10 text-white hover:bg-white/10 transition-all duration-200"
-      >
-        X でシェア
+      <Button variant="outline" size="sm" onClick={shareX}>
+        𝕏 でシェア
       </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={shareLine}
-        className="bg-white/5 border-white/10 text-white hover:bg-white/10 transition-all duration-200"
-      >
+      <Button variant="outline" size="sm" onClick={shareLine}>
         LINE でシェア
       </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={copyLink}
-        disabled={copied}
-        className="bg-white/5 border-white/10 text-white hover:bg-white/10 transition-all duration-200"
-      >
-        {copied ? "コピーしました" : "リンクをコピー"}
+      <Button variant="outline" size="sm" onClick={copyLink} disabled={copied}>
+        {copied ? (
+          <>
+            <Check className="mr-1 h-3 w-3 text-green-500" />
+            コピーしました
+          </>
+        ) : (
+          <>
+            <Share2 className="mr-1 h-3 w-3" />
+            リンクをコピー
+          </>
+        )}
       </Button>
     </div>
   );

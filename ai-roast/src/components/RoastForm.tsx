@@ -51,13 +51,10 @@ export function RoastForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white/5 rounded-xl p-8 space-y-5 border border-white/10"
-    >
+    <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-xl p-8 space-y-5">
       <div>
-        <label className="block text-sm font-bold text-white/90 mb-1">
-          名前 <span className="text-orange-400">*</span>
+        <label className="block text-sm font-bold text-gray-700 mb-1">
+          名前 <span className="text-red-500">*</span>
         </label>
         <input
           name="name"
@@ -65,12 +62,12 @@ export function RoastForm() {
           onChange={handleChange}
           placeholder="例：田中太郎"
           maxLength={50}
-          className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-orange-400/50 transition-all duration-200"
+          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-white/90 mb-1">
+        <label className="block text-sm font-bold text-gray-700 mb-1">
           職業 / 肩書き
         </label>
         <input
@@ -79,12 +76,12 @@ export function RoastForm() {
           onChange={handleChange}
           placeholder="例：フリーランスエンジニア、会社員（営業）など"
           maxLength={100}
-          className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-orange-400/50 transition-all duration-200"
+          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-white/90 mb-1">
+        <label className="block text-sm font-bold text-gray-700 mb-1">
           趣味
         </label>
         <input
@@ -93,52 +90,52 @@ export function RoastForm() {
           onChange={handleChange}
           placeholder="例：筋トレ、アニメ鑑賞、読書、カフェ巡り"
           maxLength={200}
-          className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-orange-400/50 transition-all duration-200"
+          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-white/90 mb-1">
+        <label className="block text-sm font-bold text-gray-700 mb-1">
           自己PR
         </label>
         <Textarea
           name="selfpr"
           value={form.selfpr}
           onChange={handleChange}
-          placeholder="例：誰よりも努力家です。毎朝5時起きでジムに行き..."
+          placeholder="例：誰よりも努力家です。毎朝5時起きでジムに行き…"
           maxLength={300}
           rows={3}
-          className="resize-none rounded-lg bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:ring-orange-400/50 transition-all duration-200"
+          className="resize-none rounded-xl focus:ring-orange-300"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-white/90 mb-1">
+        <label className="block text-sm font-bold text-gray-700 mb-1">
           SNSプロフィール文 / 一言
         </label>
         <Textarea
           name="bio"
           value={form.bio}
           onChange={handleChange}
-          placeholder={'例：「好きな人と好きなことを好きなだけ」がモットー。夢は世界一周。'}
+          placeholder="例：「好きな人と好きなことを好きなだけ」がモットー。夢は世界一周。"
           maxLength={500}
           rows={3}
-          className="resize-none rounded-lg bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:ring-orange-400/50 transition-all duration-200"
+          className="resize-none rounded-xl focus:ring-orange-300"
         />
       </div>
 
       <Button
         type="submit"
         disabled={loading || !form.name.trim()}
-        className="w-full h-14 text-base font-black rounded-lg bg-orange-500 hover:bg-orange-600 disabled:opacity-50 cursor-pointer transition-all duration-200"
+        className="w-full h-14 text-base font-black rounded-xl bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:opacity-50"
       >
         {loading ? (
           <span className="flex items-center gap-2">
-            <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <span className="animate-spin text-xl">🔥</span>
             AIがロースト中...
           </span>
         ) : (
-          <span>ローストされる</span>
+          "🔥 ロースト される"
         )}
       </Button>
     </form>

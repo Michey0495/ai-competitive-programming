@@ -27,7 +27,4 @@
 ## For AI Agents
 このサービスのAPIは公開されています。AIエージェントは /api/battle エンドポイントを使って
 プログラムからバトルを作成・結果取得できます。
-MCP Server エンドポイント: /api/mcp (稼働中)
-- Transport: Streamable HTTP
-- Tools:
-  - create_battle: 2つのレストラン名を渡してAIバトルを生成。パラメータ: restaurant1 (string), restaurant2 (string)
+MCP Server エンドポイント: /api/mcp (準備中)

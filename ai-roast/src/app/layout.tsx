@@ -3,7 +3,6 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { FeedbackWidget } from "@/components/FeedbackWidget";
-import CrossPromo from "@/components/CrossPromo";
 import Script from "next/script";
 
 const geist = Geist({ subsets: ["latin"] });
@@ -12,23 +11,23 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://roast.ezoai.jp";
 
 export const metadata: Metadata = {
   title: {
-    default: "AIロースト - AIがあなたを愛のある毒舌でツッコむ",
-    template: "%s | AIロースト",
+    default: "AIロースト🔥 - AIがあなたを愛のある毒舌でツッコむ",
+    template: "%s | AIロースト🔥",
   },
   description:
-    "プロフィールを入力するだけ！AIが愛のある毒舌ツッコミでロースト。結果をスクショしてSNSで拡散しよう",
+    "プロフィールを入力するだけ！AIが愛のある毒舌ツッコミでロースト。結果をスクショしてSNSで拡散しよう🔥",
   metadataBase: new URL(siteUrl),
   openGraph: {
     type: "website",
-    siteName: "AIロースト",
+    siteName: "AIロースト🔥",
     url: siteUrl,
-    title: "AIロースト - AIがあなたを愛のある毒舌でツッコむ",
+    title: "AIロースト🔥 - AIがあなたを愛のある毒舌でツッコむ",
     description:
-      "プロフィールを入力するだけ！AIが愛のある毒舌ツッコミでロースト。結果をスクショしてSNSで拡散しよう",
+      "プロフィールを入力するだけ！AIが愛のある毒舌ツッコミでロースト。結果をスクショしてSNSで拡散しよう🔥",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AIロースト - AIがあなたを愛のある毒舌でツッコむ",
+    title: "AIロースト🔥 - AIがあなたを愛のある毒舌でツッコむ",
     description:
       "プロフィールを入力するだけ！AIが愛のある毒舌ツッコミでロースト。",
   },
@@ -55,7 +54,6 @@ export default function RootLayout({
           </>
         )}
         {children}
-        <CrossPromo current="AIロースト" />
         <FeedbackWidget repoName="02dev" />
         <Toaster richColors position="top-center" />
       </body>

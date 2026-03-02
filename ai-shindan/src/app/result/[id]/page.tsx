@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const result = await kv.get<DiagnosisResult>(`result:${id}`);
     if (!result) return {};
     return {
-      title: `${result.personalityType} | AI性格診断`,
+      title: `${result.emoji} ${result.personalityType} | AI性格診断`,
       description: result.description,
       openGraph: {
         title: `私の性格タイプは「${result.personalityType}」でした！`,
@@ -47,7 +47,7 @@ export default async function ResultPage({ params }: Props) {
   try {
     result = await kv.get<DiagnosisResult>(`result:${id}`);
   } catch {
-    // KV not available in dev
+    // KV not available in dev — use placeholder
   }
 
   if (!result) {
@@ -57,7 +57,7 @@ export default async function ResultPage({ params }: Props) {
   const colors = colorMap[result.colorScheme] ?? colorMap.purple;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-gradient-to-br from-gray-950 via-purple-950/30 to-gray-950">
       <ResultCard result={result} colors={colors} />
     </div>
   );

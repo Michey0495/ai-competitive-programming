@@ -13,12 +13,12 @@ export function ScoreBar({ score1, score2, category, comment }: ScoreBarProps) {
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-sm font-medium">
-        <span className="text-blue-400">{score1}</span>
-        <span className="text-white/60">{category}</span>
-        <span className="text-orange-400">{score2}</span>
+        <span className="text-blue-600">{score1}</span>
+        <span className="text-muted-foreground">{category}</span>
+        <span className="text-orange-500">{score2}</span>
       </div>
       <div
-        className="flex h-3 rounded-full overflow-hidden bg-white/5"
+        className="flex h-3 rounded-full overflow-hidden bg-muted"
         role="img"
         aria-label={`${category}: ${score1}点 vs ${score2}点`}
       >
@@ -31,7 +31,7 @@ export function ScoreBar({ score1, score2, category, comment }: ScoreBarProps) {
           style={{ width: `${pct2}%` }}
         />
       </div>
-      <p className="text-xs text-white/50 text-center">{comment}</p>
+      <p className="text-xs text-muted-foreground text-center">{comment}</p>
     </div>
   );
 }

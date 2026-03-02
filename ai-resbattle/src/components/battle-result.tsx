@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScoreBar } from "./score-bar";
 import { ShareButtons } from "./share-buttons";
+import { Trophy } from "lucide-react";
 
 interface BattleResultProps {
   battle: Battle;
@@ -22,14 +23,14 @@ export function BattleResult({ battle, url }: BattleResultProps) {
   return (
     <div className="space-y-6 w-full max-w-2xl">
       {/* 勝者発表 */}
-      <Card className="border border-amber-400/30 bg-amber-400/5">
+      <Card className="border-2 border-yellow-400 bg-yellow-50 dark:bg-yellow-950">
         <CardContent className="pt-6 text-center space-y-2">
-          <p className="text-amber-400 font-bold text-lg">WINNER</p>
-          <p className="text-sm text-white/60">AI判定結果</p>
-          <p className="text-2xl font-bold text-white">
-            {winnerName ? `${winnerName} の勝利` : "引き分け"}
+          <Trophy className="h-10 w-10 text-yellow-500 mx-auto" />
+          <p className="text-sm text-muted-foreground">AI判定結果</p>
+          <p className="text-2xl font-bold">
+            {winnerName ? `「${winnerName}」の勝利！` : "引き分け！"}
           </p>
-          <p className="text-sm text-white/60">{summary}</p>
+          <p className="text-sm text-muted-foreground">{summary}</p>
         </CardContent>
       </Card>
 
@@ -41,33 +42,33 @@ export function BattleResult({ battle, url }: BattleResultProps) {
         ].map(({ r, side, color }) => (
           <Card
             key={side}
-            className={`bg-white/5 border ${
-              winner === side ? "border-amber-400/40" : "border-white/10"
-            }`}
+            className={
+              winner === side ? "border-2 border-yellow-400" : undefined
+            }
           >
             <CardHeader className="pb-2">
-              <CardTitle className="text-base flex items-center gap-2 text-white">
+              <CardTitle className="text-base flex items-center gap-2">
                 <span
                   className={`inline-block w-2 h-2 rounded-full ${
-                    color === "blue" ? "bg-blue-400" : "bg-orange-400"
+                    color === "blue" ? "bg-blue-500" : "bg-orange-400"
                   }`}
                 />
                 {r.name}
                 {winner === side && (
-                  <Badge variant="secondary" className="ml-auto text-xs bg-amber-400/10 text-amber-300 border border-amber-400/30">
+                  <Badge variant="secondary" className="ml-auto text-xs">
                     WIN
                   </Badge>
                 )}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-1">
-              <p className="text-3xl font-bold text-center text-white">
+              <p className="text-3xl font-bold text-center">
                 {r.totalScore}
-                <span className="text-base font-normal text-white/40">
+                <span className="text-base font-normal text-muted-foreground">
                   点
                 </span>
               </p>
-              <p className="text-xs text-white/60 text-center leading-relaxed">
+              <p className="text-xs text-muted-foreground text-center leading-relaxed">
                 {r.comment}
               </p>
             </CardContent>
@@ -76,14 +77,14 @@ export function BattleResult({ battle, url }: BattleResultProps) {
       </div>
 
       {/* カテゴリ別スコア */}
-      <Card className="bg-white/5 border border-white/10">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-base text-white">カテゴリ別スコア</CardTitle>
+          <CardTitle className="text-base">カテゴリ別スコア</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex justify-between text-xs font-medium mb-1">
-            <span className="text-blue-400">{restaurant1.name}</span>
-            <span className="text-orange-400">{restaurant2.name}</span>
+            <span className="text-blue-600">{restaurant1.name}</span>
+            <span className="text-orange-500">{restaurant2.name}</span>
           </div>
           {restaurant1.scores.map((score) => {
             const score2 = restaurant2.scores.find(
@@ -104,7 +105,7 @@ export function BattleResult({ battle, url }: BattleResultProps) {
 
       {/* シェアボタン */}
       <div className="text-center space-y-2">
-        <p className="text-sm text-white/60">結果をシェア</p>
+        <p className="text-sm text-muted-foreground">結果をシェア</p>
         <ShareButtons
           restaurant1={restaurant1.name}
           restaurant2={restaurant2.name}
