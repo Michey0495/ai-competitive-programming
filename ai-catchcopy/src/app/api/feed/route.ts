@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
-import { kv } from "@vercel/kv";
 import type { CatchcopyResult, FeedItem } from "@/types";
 
 export async function GET() {
   try {
+    if (!process.env.KV_REST_API_URL) {
+      return NextResponse.json([]);
+    }
+    const { kv } = await import("@vercel/kv");
     const ids = await kv.zrange("catchcopy:feed", 0, 19, { rev: true });
 
     if (!ids || ids.length === 0) {
