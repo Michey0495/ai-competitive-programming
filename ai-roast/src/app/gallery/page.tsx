@@ -1,46 +1,27 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { FeedList } from "@/components/FeedList";
 
 export const metadata: Metadata = {
   title: "ギャラリー | AIロースト",
   description: "AIが生成した愛のあるロースト一覧",
 };
 
-interface FeedItem {
-  id: string;
-  name: string;
-  job: string;
-  roast: string;
-  createdAt: string;
-}
-
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return `${seconds}秒前`;
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}分前`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}時間前`;
-  const days = Math.floor(hours / 24);
-  return `${days}日前`;
-}
-
-async function getFeedItems(): Promise<FeedItem[]> {
+async function getInitialFeed() {
   try {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-    const res = await fetch(`${siteUrl}/api/feed`, {
+    const res = await fetch(`${siteUrl}/api/feed?cursor=0&limit=20`, {
       next: { revalidate: 30 },
     });
-    if (!res.ok) return [];
+    if (!res.ok) return { items: [], nextCursor: null };
     return await res.json();
   } catch {
-    return [];
+    return { items: [], nextCursor: null };
   }
 }
 
 export default async function GalleryPage() {
-  const items = await getFeedItems();
+  const { items, nextCursor } = await getInitialFeed();
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
@@ -65,28 +46,7 @@ export default async function GalleryPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-3">
-          {items.map((item) => (
-            <Link
-              key={item.id}
-              href={`/result/${item.id}`}
-              className="block bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-all duration-200 cursor-pointer"
-            >
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <p className="text-white font-bold">{item.name}</p>
-                  {item.job && (
-                    <p className="text-white/40 text-xs mt-0.5">{item.job}</p>
-                  )}
-                </div>
-                <span className="text-white/30 text-xs ml-4 shrink-0">
-                  {timeAgo(item.createdAt)}
-                </span>
-              </div>
-              <p className="text-white/60 text-sm line-clamp-3">{item.roast}</p>
-            </Link>
-          ))}
-        </div>
+        <FeedList initialItems={items} initialNextCursor={nextCursor} />
       )}
     </div>
   );

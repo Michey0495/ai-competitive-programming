@@ -13,29 +13,28 @@ export function ShareButtons({ shareUrl, shareText, name }: Props) {
 
   const copyLink = async () => {
     await navigator.clipboard.writeText(shareUrl);
-    toast.success("リンクをコピーしました！");
+    toast.success("リンクをコピーしました");
   };
 
   return (
     <div className="space-y-3">
-      <p className="text-center text-sm font-bold text-gray-600">
-        {name}さんのロースト結果をシェアしよう！
+      <p className="text-center text-sm text-white/40">
+        {name}さんのロースト結果をシェア
       </p>
       <div className="flex gap-3">
         <a
           href={twitterUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-2 bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-800 transition-colors"
+          className="flex-1 bg-white/10 text-white font-medium px-4 py-2.5 rounded-lg text-center text-sm hover:bg-white/20 transition-all duration-200 cursor-pointer"
         >
-          <span>𝕏</span>
-          <span>Xでシェア</span>
+          X (Twitter) でシェア
         </a>
         <button
           onClick={copyLink}
-          className="flex-1 flex items-center justify-center gap-2 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors"
+          className="flex-1 bg-white/5 text-white/70 font-medium px-4 py-2.5 rounded-lg text-sm border border-white/10 hover:bg-white/10 transition-all duration-200 cursor-pointer"
         >
-          🔗 リンクをコピー
+          リンクをコピー
         </button>
       </div>
     </div>

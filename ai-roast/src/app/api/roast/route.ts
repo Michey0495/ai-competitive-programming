@@ -86,7 +86,7 @@ ${profileText}
     createdAt: new Date().toISOString(),
   };
 
-  await kv.set(`roast:${id}`, result, { ex: 60 * 60 * 24 * 30 }); // 30 days
+  await kv.set(`roast:${id}`, result, { ex: 60 * 60 * 24 * 365 }); // 365 days
   await kv.zadd("roast:feed", { score: Date.now(), member: id });
 
   return NextResponse.json({ id });
