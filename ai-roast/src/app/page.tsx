@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { RoastForm } from "@/components/RoastForm";
+import { RecentRoasts } from "@/components/RecentRoasts";
 
 export default function HomePage() {
   return (
@@ -20,6 +22,20 @@ export default function HomePage() {
         </div>
 
         <RoastForm />
+
+        {/* Recent Roasts */}
+        <div className="mt-12 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-gray-800">最近のロースト</h2>
+            <Link
+              href="/gallery"
+              className="text-sm text-red-500 hover:text-red-400 transition-colors cursor-pointer"
+            >
+              すべて見る
+            </Link>
+          </div>
+          <RecentRoasts />
+        </div>
 
         <footer className="text-center mt-12 text-xs text-gray-400">
           <p>Powered by Claude AI | © 2026 AIロースト</p>

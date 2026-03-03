@@ -80,6 +80,7 @@ export async function POST(req: NextRequest) {
     };
 
     await kv.set(`result:${id}`, result, { ex: 60 * 60 * 24 * 30 }); // 30日保存
+    await kv.zadd("results:feed", { score: Date.now(), member: id });
 
     return NextResponse.json({ id });
   } catch (err) {

@@ -146,6 +146,7 @@ JSONのみを出力してください。`;
       };
 
       await kv.set(`interview:${id}`, result, { ex: 60 * 60 * 24 * 30 });
+      await kv.zadd("interview:feed", { score: Date.now(), member: id });
 
       return NextResponse.json({
         jsonrpc: "2.0",

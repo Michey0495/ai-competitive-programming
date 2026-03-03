@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { InterviewForm } from "@/components/InterviewForm";
+import { RecentInterviews } from "@/components/RecentInterviews";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-interview.ezoai.jp";
@@ -107,6 +109,20 @@ export default function Home() {
       </div>
 
       <InterviewForm />
+
+      {/* Recent Results */}
+      <div className="mt-12">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-white">最近の面接結果</h2>
+          <Link
+            href="/feed"
+            className="text-sm text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
+          >
+            すべて見る
+          </Link>
+        </div>
+        <RecentInterviews />
+      </div>
     </div>
   );
 }

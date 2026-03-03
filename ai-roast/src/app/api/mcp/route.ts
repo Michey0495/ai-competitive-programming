@@ -122,6 +122,7 @@ ${profileText}
   };
 
   await kv.set(`roast:${id}`, result, { ex: 60 * 60 * 24 * 30 });
+  await kv.zadd("roast:feed", { score: Date.now(), member: id });
 
   return { id, roast: roastText };
 }

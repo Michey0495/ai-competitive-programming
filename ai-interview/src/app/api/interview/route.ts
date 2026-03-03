@@ -124,6 +124,7 @@ ${input.motivation ? `- 志望動機: ${input.motivation}` : ""}
     };
 
     await kv.set(`interview:${id}`, result, { ex: 60 * 60 * 24 * 30 });
+    await kv.zadd("interview:feed", { score: Date.now(), member: id });
 
     return NextResponse.json({ id });
   } catch (error) {

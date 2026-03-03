@@ -1,6 +1,15 @@
 import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
-import type { DiagnosisResult, FeedItem } from "@/types";
+import type { DiagnosisResult } from "@/types";
+
+interface FeedItem {
+  id: string;
+  personalityType: string;
+  agentName?: string;
+  traits: string[];
+  colorScheme: string;
+  createdAt: number;
+}
 
 export async function GET() {
   try {
