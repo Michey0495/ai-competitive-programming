@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Metadata } from "next";
 import { ShareButtons } from "@/components/ShareButtons";
+import { LikeButton } from "@/components/LikeButton";
 import type { InterviewResult } from "@/types";
 
 const siteUrl =
@@ -168,7 +169,10 @@ export default async function ResultPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Share */}
+      {/* Like + Share */}
+      <div className="mb-4">
+        <LikeButton id={id} />
+      </div>
       <div className="space-y-4">
         <ShareButtons shareText={shareText} shareUrl={shareUrl} />
         <Link

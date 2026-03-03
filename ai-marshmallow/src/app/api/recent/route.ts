@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     if (sort === "popular" && process.env.KV_REST_API_URL) {
       const { kv } = await import("@vercel/kv");
-      ids = await kv.zrange("marshmallow:popular", cursor, cursor + limit, { rev: true });
+      ids = await kv.zrange("marshmallow:popular", cursor, cursor + limit, { rev: true }) as string[];
     }
 
     if (ids && ids.length > 0) {

@@ -123,7 +123,7 @@ ${input.motivation ? `- 志望動機: ${input.motivation}` : ""}
       createdAt: new Date().toISOString(),
     };
 
-    await kv.set(`interview:${id}`, result, { ex: 60 * 60 * 24 * 30 });
+    await kv.set(`interview:${id}`, result, { ex: 60 * 60 * 24 * 365 });
     await kv.zadd("interview:feed", { score: Date.now(), member: id });
 
     return NextResponse.json({ id });
