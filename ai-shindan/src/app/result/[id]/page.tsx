@@ -3,6 +3,7 @@ import { kv } from "@vercel/kv";
 import type { Metadata } from "next";
 import type { DiagnosisResult } from "@/types";
 import ResultCard from "@/components/ResultCard";
+import { LikeButton } from "@/components/LikeButton";
 
 const colorMap: Record<string, { from: string; to: string; text: string }> = {
   red: { from: "from-red-500", to: "to-orange-500", text: "text-red-400" },
@@ -59,6 +60,9 @@ export default async function ResultPage({ params }: Props) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-gradient-to-br from-gray-950 via-purple-950/30 to-gray-950">
       <ResultCard result={result} colors={colors} />
+      <div className="mt-4">
+        <LikeButton id={id} />
+      </div>
     </div>
   );
 }

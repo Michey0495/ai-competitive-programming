@@ -156,7 +156,7 @@ async function handleDiagnose(
 
   result.shareText = generateShareText(result);
 
-  await kv.set(`result:${id}`, result, { ex: 60 * 60 * 24 * 30 });
+  await kv.set(`result:${id}`, result, { ex: 60 * 60 * 24 * 365 });
   await kv.zadd("results:feed", { score: result.createdAt, member: result.id });
 
   return result;
@@ -211,7 +211,7 @@ async function handleGenerateShareText(resultId: string): Promise<string> {
 
   // Cache the generated share text
   result.shareText = shareText;
-  await kv.set(`result:${resultId}`, result, { ex: 60 * 60 * 24 * 30 });
+  await kv.set(`result:${resultId}`, result, { ex: 60 * 60 * 24 * 365 });
 
   return shareText;
 }

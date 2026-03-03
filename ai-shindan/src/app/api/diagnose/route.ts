@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
       createdAt: Date.now(),
     };
 
-    await kv.set(`result:${id}`, result, { ex: 60 * 60 * 24 * 30 }); // 30日保存
+    await kv.set(`result:${id}`, result, { ex: 60 * 60 * 24 * 365 }); // 365日保存
     await kv.zadd("results:feed", { score: Date.now(), member: id });
 
     return NextResponse.json({ id });
