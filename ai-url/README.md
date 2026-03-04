@@ -78,3 +78,11 @@ Vercel にデプロイ。ドメイン: `aeo.ezoai.jp`
 - フィードバックAPI (`/api/feedback`) - GitHub Issues自動作成
 - フィードバックウィジェット (ダークテーマ対応)
 - `npm run build` 成功確認
+
+### Night 3 (完了)
+- 結果ページのデータ取得をAPI self-fetchから直接ストア読み取りに改善
+- 結果ページに「別のURLを診断」「結果を共有」ボタン追加
+- トップページにFAQセクション追加 (FAQPage構造化データ付き)
+- OGP画像API (`/api/og`) - 動的OG画像生成 (スコア表示対応)
+- スキャナー改善: レスポンス時間計測を技術的要素に追加
+- `npm run build` 成功確認

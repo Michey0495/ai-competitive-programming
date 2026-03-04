@@ -111,6 +111,32 @@ export function ResultDetail({ result }: ResultDetailProps) {
         </div>
       )}
 
+      {/* Actions */}
+      <div className="flex flex-wrap gap-3 justify-center">
+        <button
+          onClick={() => {
+            window.location.href = "/";
+          }}
+          className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-lg cursor-pointer transition-all duration-200 text-sm"
+        >
+          別のURLを診断
+        </button>
+        <button
+          onClick={() => {
+            const text = `${result.url} のAEOスコア: ${result.totalScore}/${result.maxTotalScore}点`;
+            if (navigator.share) {
+              navigator.share({ title: "AEO Checker", text, url: window.location.href });
+            } else {
+              navigator.clipboard.writeText(`${text}\n${window.location.href}`);
+              alert("結果をコピーしました");
+            }
+          }}
+          className="px-5 py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-lg cursor-pointer transition-all duration-200 text-sm"
+        >
+          結果を共有
+        </button>
+      </div>
+
       {/* Generated files */}
       {(result.generatedFiles.llmsTxt || result.generatedFiles.robotsTxt) && (
         <div className="space-y-4">

@@ -5,7 +5,13 @@ import { NextRequest, NextResponse } from "next/server";
  * フィードバックを受け取り GitHub Issue として自動作成
  */
 export async function POST(request: NextRequest) {
-  const { type, message, repo } = await request.json();
+  let payload: { type?: string; message?: string; repo?: string };
+  try {
+    payload = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const { type, message, repo } = payload;
 
   if (!message?.trim()) {
     return NextResponse.json({ error: "Message required" }, { status: 400 });
@@ -34,7 +40,7 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           title,
           body,
-          labels: [labels[type] || "feedback"],
+          labels: [labels[type ?? "other"] || "feedback"],
         }),
       });
     } catch (e) {

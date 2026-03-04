@@ -60,10 +60,11 @@ export function ScanForm() {
     <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto">
       <div className="flex gap-3">
         <Input
-          type="text"
+          type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://example.com"
+          aria-label="診断するURLを入力"
           className="flex-1 h-14 bg-white/5 border-white/10 text-white text-lg placeholder:text-white/30"
           disabled={loading}
         />

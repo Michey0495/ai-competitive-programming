@@ -33,6 +33,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   alternates: {
     canonical: siteUrl,
+    languages: {
+      "ja": siteUrl,
+      "x-default": siteUrl,
+    },
   },
   openGraph: {
     type: "website",
@@ -42,6 +46,7 @@ export const metadata: Metadata = {
     description:
       "URLを入力するだけでAI検索エンジンでの発見されやすさを100点満点でスコアリング。日本語で改善アクションを提示。無料・登録不要。",
     locale: "ja_JP",
+    images: [{ url: `${siteUrl}/api/og`, width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",

@@ -6,7 +6,8 @@ import type {
 } from "@/types";
 import { AI_BOTS } from "@/types";
 
-async function fetchPage(url: string): Promise<string> {
+async function fetchPage(url: string): Promise<{ html: string; responseTime: number }> {
+  const start = Date.now();
   const res = await fetch(url, {
     headers: {
       "User-Agent":
@@ -15,7 +16,9 @@ async function fetchPage(url: string): Promise<string> {
     signal: AbortSignal.timeout(15000),
   });
   if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
-  return res.text();
+  const html = await res.text();
+  const responseTime = Date.now() - start;
+  return { html, responseTime };
 }
 
 async function fetchText(url: string): Promise<string | null> {
@@ -608,7 +611,8 @@ export async function checkInternalLinks(
 
 export async function checkTechnical(
   url: string,
-  html: string
+  html: string,
+  responseTime: number
 ): Promise<CategoryResult> {
   const findings: ScanFinding[] = [];
   const recommendations: ScanRecommendation[] = [];
@@ -618,7 +622,7 @@ export async function checkTechnical(
   // HTTPS
   if (url.startsWith("https://")) {
     findings.push({ status: "pass", message: "HTTPSが使用されています" });
-    score += 4;
+    score += 3;
   } else {
     findings.push({ status: "fail", message: "HTTPSが使用されていません" });
     recommendations.push({
@@ -634,7 +638,7 @@ export async function checkTechnical(
       status: "pass",
       message: "viewportメタタグが設定されています",
     });
-    score += 3;
+    score += 2;
   } else {
     findings.push({
       status: "fail",
@@ -653,7 +657,7 @@ export async function checkTechnical(
       status: "pass",
       message: `lang属性: "${lang}"`,
     });
-    score += 3;
+    score += 2;
   } else {
     findings.push({
       status: "warn",
@@ -664,6 +668,34 @@ export async function checkTechnical(
       message: '<html lang="ja"> を設定してください',
     });
     score += 1;
+  }
+
+  // Response time
+  if (responseTime < 1000) {
+    findings.push({
+      status: "pass",
+      message: `レスポンス時間: ${responseTime}ms（高速）`,
+    });
+    score += 3;
+  } else if (responseTime < 3000) {
+    findings.push({
+      status: "warn",
+      message: `レスポンス時間: ${responseTime}ms（やや遅い）`,
+    });
+    score += 1;
+    recommendations.push({
+      priority: "medium",
+      message: "ページの読み込み速度を改善してください（目標: 1秒以下）",
+    });
+  } else {
+    findings.push({
+      status: "fail",
+      message: `レスポンス時間: ${responseTime}ms（遅い）`,
+    });
+    recommendations.push({
+      priority: "high",
+      message: "ページの読み込み速度が遅いです。サーバー最適化やCDNの導入を検討してください",
+    });
   }
 
   return {
@@ -682,7 +714,7 @@ export async function scanUrl(url: string): Promise<{
   maxTotalScore: number;
 }> {
   const baseUrl = getBaseUrl(url);
-  const html = await fetchPage(url);
+  const { html, responseTime } = await fetchPage(url);
 
   const categories = await Promise.all([
     checkLlmsTxt(baseUrl),
@@ -691,7 +723,7 @@ export async function scanUrl(url: string): Promise<{
     checkMetaTags(html, url),
     checkContentStructure(html),
     checkInternalLinks(html, baseUrl),
-    checkTechnical(url, html),
+    checkTechnical(url, html, responseTime),
   ]);
 
   const totalScore = categories.reduce((sum, c) => sum + c.score, 0);

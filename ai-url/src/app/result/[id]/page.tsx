@@ -1,19 +1,8 @@
 import { ResultDetail } from "@/components/ResultDetail";
+import { getResult } from "@/lib/store";
 import { SITE_URL } from "@/lib/constants";
-import type { ScanResult } from "@/types";
 import type { Metadata } from "next";
-
-async function getResult(id: string): Promise<ScanResult | null> {
-  try {
-    const res = await fetch(`${SITE_URL}/api/result/${id}`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
-}
+import Link from "next/link";
 
 export async function generateMetadata({
   params,
@@ -21,15 +10,29 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const result = await getResult(id);
+  const result = getResult(id);
 
   if (!result) {
     return { title: "結果が見つかりません" };
   }
 
+  const title = `${result.url} のAEOスコア: ${result.totalScore}点`;
+  const description = `${result.url} のAI検索対策スコアは${result.totalScore}/${result.maxTotalScore}点です。`;
+
   return {
-    title: `${result.url} のAEOスコア: ${result.totalScore}点`,
-    description: `${result.url} のAI検索対策スコアは${result.totalScore}/${result.maxTotalScore}点です。`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: `${SITE_URL}/api/og?score=${result.totalScore}&url=${encodeURIComponent(result.url)}`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
   };
 }
 
@@ -39,7 +42,7 @@ export default async function ResultPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const result = await getResult(id);
+  const result = getResult(id);
 
   if (!result) {
     return (
@@ -49,6 +52,12 @@ export default async function ResultPage({
           <p className="text-white/40 text-sm">
             URLを再度入力してスキャンしてください。
           </p>
+          <Link
+            href="/"
+            className="inline-block mt-4 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-lg cursor-pointer transition-all duration-200"
+          >
+            トップに戻る
+          </Link>
         </div>
       </div>
     );

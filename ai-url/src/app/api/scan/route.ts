@@ -2,12 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { nanoid } from "nanoid";
 import { scanUrl } from "@/lib/scanner";
 import { generateLlmsTxt, generateRobotsTxt } from "@/lib/generator";
+import { setResult } from "@/lib/store";
 import type { ScanResult } from "@/types";
-
-// In-memory store for MVP (replace with Vercel KV in production)
-const results = new Map<string, ScanResult>();
-
-export { results };
 
 export async function POST(req: NextRequest) {
   let body: { url?: string };
@@ -62,7 +58,7 @@ export async function POST(req: NextRequest) {
       scannedAt: new Date().toISOString(),
     };
 
-    results.set(id, result);
+    setResult(id, result);
 
     return NextResponse.json(result);
   } catch (err) {
