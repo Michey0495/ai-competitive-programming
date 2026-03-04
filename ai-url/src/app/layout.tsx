@@ -9,7 +9,7 @@ import Script from "next/script";
 
 const geist = Geist({ subsets: ["latin"] });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aeo.ezoai.jp";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-url.ezoai.jp";
 
 export const metadata: Metadata = {
   title: {

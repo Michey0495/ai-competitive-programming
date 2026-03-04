@@ -114,7 +114,7 @@ export async function GET(req: NextRequest) {
               marginTop: "20px",
             }}
           >
-            aeo.ezoai.jp
+            ai-url.ezoai.jp
           </div>
         </div>
       </div>

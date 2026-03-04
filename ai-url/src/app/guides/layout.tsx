@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { GuideBreadcrumb } from "@/components/GuideBreadcrumb";
 
 const GUIDES = [
   { href: "/guides/llms-txt", label: "llms.txt" },
@@ -17,6 +18,7 @@ export default function GuidesLayout({
 }) {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
+      <GuideBreadcrumb guides={GUIDES} />
       <nav className="flex flex-wrap gap-2 mb-10">
         {GUIDES.map((g) => (
           <Link

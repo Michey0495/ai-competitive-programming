@@ -80,6 +80,17 @@ export function ResultDetail({ result }: ResultDetailProps) {
     ? result.totalScore - prevScore.totalScore
     : null;
 
+  // Collect top priority recommendations across all categories
+  const topRecommendations = result.categories
+    .flatMap((cat) =>
+      cat.recommendations.map((r) => ({ ...r, categoryLabel: cat.label }))
+    )
+    .sort((a, b) => {
+      const order = { high: 0, medium: 1, low: 2 };
+      return order[a.priority] - order[b.priority];
+    })
+    .slice(0, 3);
+
   return (
     <div className="w-full max-w-4xl mx-auto space-y-8">
       {/* Header */}
@@ -106,6 +117,42 @@ export function ResultDetail({ result }: ResultDetailProps) {
               : "AI検索対策が不足しています"}
         </p>
       </div>
+
+      {/* Priority improvements summary */}
+      {topRecommendations.length > 0 && (
+        <div className="bg-white/5 border border-white/10 rounded-lg p-6 space-y-3">
+          <h2 className="text-lg font-bold text-white">
+            優先改善ポイント
+          </h2>
+          <div className="space-y-2">
+            {topRecommendations.map((r, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <span
+                  className={`text-xs px-2 py-0.5 rounded mt-0.5 shrink-0 ${
+                    r.priority === "high"
+                      ? "bg-red-400/20 text-red-300"
+                      : r.priority === "medium"
+                        ? "bg-yellow-400/20 text-yellow-300"
+                        : "bg-white/10 text-white/60"
+                  }`}
+                >
+                  {r.priority === "high"
+                    ? "重要"
+                    : r.priority === "medium"
+                      ? "推奨"
+                      : "任意"}
+                </span>
+                <div>
+                  <span className="text-white/80 text-sm">{r.message}</span>
+                  <span className="text-white/30 text-xs ml-2">
+                    ({r.categoryLabel})
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Category bars */}
       <div className="space-y-3">
@@ -258,9 +305,15 @@ function FileBlock({ title, content }: { title: string; content: string }) {
   const [copied, setCopied] = useState(false);
 
   function handleCopy() {
-    navigator.clipboard.writeText(content);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(content).then(
+      () => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      },
+      () => {
+        // Clipboard API not available
+      }
+    );
   }
 
   function handleDownload() {

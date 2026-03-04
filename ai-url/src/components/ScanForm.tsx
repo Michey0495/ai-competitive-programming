@@ -92,7 +92,8 @@ export function ScanForm() {
       <form onSubmit={handleSubmit}>
         <div className="flex gap-3">
           <Input
-            type="url"
+            type="text"
+            inputMode="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="https://example.com"

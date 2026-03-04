@@ -11,7 +11,7 @@ async function fetchPage(url: string): Promise<{ html: string; responseTime: num
   const res = await fetch(url, {
     headers: {
       "User-Agent":
-        "Mozilla/5.0 (compatible; AEOChecker/1.0; +https://aeo.ezoai.jp)",
+        "Mozilla/5.0 (compatible; AEOChecker/1.0; +https://ai-url.ezoai.jp)",
     },
     signal: AbortSignal.timeout(15000),
   });
@@ -48,8 +48,13 @@ export async function checkLlmsTxt(
   const recommendations: ScanRecommendation[] = [];
   let score = 0;
 
-  const content = await fetchText(`${baseUrl}/llms.txt`);
+  const [content, fullContent, agentJson] = await Promise.all([
+    fetchText(`${baseUrl}/llms.txt`),
+    fetchText(`${baseUrl}/llms-full.txt`),
+    fetchText(`${baseUrl}/.well-known/agent.json`),
+  ]);
 
+  // llms.txt (9 points max)
   if (!content) {
     findings.push({ status: "fail", message: "llms.txt が見つかりません" });
     recommendations.push({
@@ -59,14 +64,14 @@ export async function checkLlmsTxt(
     });
   } else {
     findings.push({ status: "pass", message: "llms.txt が存在します" });
-    score += 5;
+    score += 3;
 
     if (content.startsWith("#")) {
       findings.push({
         status: "pass",
         message: "正しいフォーマット(#見出し)で記述されています",
       });
-      score += 5;
+      score += 3;
     } else {
       findings.push({
         status: "warn",
@@ -76,7 +81,7 @@ export async function checkLlmsTxt(
         priority: "medium",
         message: "llms.txtは # 見出しで始めてください",
       });
-      score += 2;
+      score += 1;
     }
 
     if (content.length > 200) {
@@ -84,7 +89,7 @@ export async function checkLlmsTxt(
         status: "pass",
         message: "十分な情報量があります",
       });
-      score += 5;
+      score += 3;
     } else {
       findings.push({
         status: "warn",
@@ -95,14 +100,61 @@ export async function checkLlmsTxt(
         message:
           "サイトの概要、主要ページ一覧、APIの説明などを追加してください",
       });
-      score += 2;
+      score += 1;
     }
+  }
+
+  // llms-full.txt (3 points)
+  if (fullContent) {
+    findings.push({ status: "pass", message: "llms-full.txt が存在します（詳細版）" });
+    score += 3;
+  } else {
+    findings.push({
+      status: "warn",
+      message: "llms-full.txt がありません",
+    });
+    recommendations.push({
+      priority: "low",
+      message: "llms-full.txt（詳細版）を設置すると、AIがサイトをより深く理解できます",
+    });
+  }
+
+  // .well-known/agent.json (3 points)
+  if (agentJson) {
+    let validJson = false;
+    try {
+      const parsed = JSON.parse(agentJson);
+      validJson = !!(parsed.name && parsed.description);
+    } catch {
+      // invalid JSON
+    }
+    if (validJson) {
+      findings.push({ status: "pass", message: ".well-known/agent.json が存在します（A2A Agent Card）" });
+      score += 3;
+    } else {
+      findings.push({ status: "warn", message: ".well-known/agent.json のフォーマットが不正です" });
+      score += 1;
+      recommendations.push({
+        priority: "medium",
+        message: "agent.jsonにname, descriptionフィールドを含めてください",
+      });
+    }
+  } else {
+    findings.push({
+      status: "warn",
+      message: ".well-known/agent.json がありません",
+    });
+    recommendations.push({
+      priority: "medium",
+      message: "A2A Agent Card (.well-known/agent.json) を設置してAIエージェントからの発見性を高めてください",
+      code: '{\n  "name": "サービス名",\n  "description": "説明",\n  "url": "https://example.com",\n  "capabilities": ["capability1"]\n}',
+    });
   }
 
   return {
     key: "llms_txt",
     label: "llms.txt",
-    score,
+    score: Math.min(score, 15),
     maxScore: 15,
     findings,
     recommendations,
@@ -668,6 +720,24 @@ export async function checkTechnical(
       message: '<html lang="ja"> を設定してください',
     });
     score += 1;
+  }
+
+  // Meta robots
+  const metaRobots = $('meta[name="robots"]').attr("content")?.toLowerCase() ?? "";
+  if (metaRobots.includes("noindex") || metaRobots.includes("nofollow")) {
+    findings.push({
+      status: "fail",
+      message: `meta robots: "${metaRobots}"（AI検索インデックスがブロックされる可能性）`,
+    });
+    recommendations.push({
+      priority: "high",
+      message: "meta robotsのnoindex/nofollowを解除してください",
+    });
+  } else if (metaRobots) {
+    findings.push({
+      status: "pass",
+      message: `meta robots: "${metaRobots}"`,
+    });
   }
 
   // Response time

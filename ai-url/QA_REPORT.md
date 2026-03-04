@@ -1,6 +1,6 @@
 # QA Report - AEO Checker
 
-Date: 2026-03-05 (QA Pass 3)
+Date: 2026-03-05 (QA Pass 4)
 
 ## Build & Lint
 
@@ -10,14 +10,20 @@ Date: 2026-03-05 (QA Pass 3)
 | `npm run lint` | PASS (0 errors, 0 warnings) |
 | TypeScript strict mode | PASS |
 
-## Fixes Applied (This Pass)
+## Fixes Applied (Pass 4)
 
-1. **Lint error: setState in useEffect** (ScanHistory.tsx) - `setHistory(getScanHistory())` in `useEffect` triggered `react-hooks/set-state-in-effect`. Replaced with lazy state initializer `useState(() => getScanHistory())`.
-2. **Lint warning: unused variable** (ScanHistory.tsx) - `setHistory` unused after fix #1. Changed to `const [history] = useState(...)`.
-3. **Navigation: full page reload** (ResultDetail.tsx) - "別のURLを診断" used `window.location.href = "/"`. Changed to `router.push("/")` for client-side navigation.
-4. **UX: alert() instead of toast** (ResultDetail.tsx) - Share fallback used `alert()`. Replaced with `toast.success()`/`toast.error()` with Promise handling for clipboard API.
-5. **a11y: ScoreCircle missing label** (ScoreCircle.tsx) - SVG visualization had no accessible label. Added `role="img"` + `aria-label`, `aria-hidden="true"` on SVG.
-6. **a11y: CategoryBar missing aria-expanded** (CategoryBar.tsx) - Toggle buttons lacked expansion state. Added `isExpanded` prop and `aria-expanded` attribute.
+1. **BUG: ScanForm `type="url"` ブロック** (ScanForm.tsx) - `type="url"` のブラウザネイティブ検証が `https://` 自動付与ロジックより先に動作し、プロトコルなしURL(例: `example.com`)の入力を拒否。`type="text" inputMode="url"` に変更。
+2. **SEO: 虚偽のaggregateRating削除** (page.tsx) - WebApplication JSON-LDに実データに基づかない `aggregateRating` (4.8/5, 12件) が含まれていた。Googleガイドライン違反のため削除。
+3. **A11y: FileBlockクリップボードエラーハンドリング** (ResultDetail.tsx) - `navigator.clipboard.writeText()` のPromiseが未ハンドリング。`.then()` でエラーケースを処理。
+
+## Fixes Applied (Pass 3)
+
+1. **Lint error: setState in useEffect** (ScanHistory.tsx) - Replaced with lazy state initializer.
+2. **Lint warning: unused variable** (ScanHistory.tsx) - Changed to `const [history] = useState(...)`.
+3. **Navigation: full page reload** (ResultDetail.tsx) - Changed to `router.push("/")`.
+4. **UX: alert() instead of toast** (ResultDetail.tsx) - Replaced with `toast.success()`/`toast.error()`.
+5. **a11y: ScoreCircle missing label** (ScoreCircle.tsx) - Added `role="img"` + `aria-label`.
+6. **a11y: CategoryBar missing aria-expanded** (CategoryBar.tsx) - Added `aria-expanded` attribute.
 
 ## Previous Fixes (Pass 1-2)
 

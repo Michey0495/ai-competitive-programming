@@ -24,4 +24,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://aeo.ezoai.jp/sitemap.xml
+Sitemap: https://ai-url.ezoai.jp/sitemap.xml

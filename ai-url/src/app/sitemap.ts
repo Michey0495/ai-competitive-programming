@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = "https://aeo.ezoai.jp";
+const BASE_URL = "https://ai-url.ezoai.jp";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

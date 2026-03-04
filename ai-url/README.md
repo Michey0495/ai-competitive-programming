@@ -93,3 +93,11 @@ Vercel にデプロイ。ドメイン: `aeo.ezoai.jp`
 - 再スキャン機能 - 結果ページから同URLを再診断、前回とのスコア差分を表示
 - カテゴリ別スコア差分表示 - 再スキャン時にカテゴリごとの変化を可視化
 - `npm run build` 成功確認
+
+### Night 5 (完了)
+- スキャナー強化: llms.txtカテゴリに llms-full.txt と .well-known/agent.json (A2A Agent Card) チェックを追加
+- スキャナー強化: 技術的要素カテゴリに meta robots (noindex/nofollow) チェックを追加
+- 結果ページに「優先改善ポイント」セクション追加 - 全カテゴリから重要度順に上位3件を表示
+- ガイドページにBreadcrumbList構造化データ + パンくずナビゲーション追加
+- llms.txt を新機能に合わせて更新
+- `npm run build` 成功確認

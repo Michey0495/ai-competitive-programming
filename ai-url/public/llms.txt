@@ -4,6 +4,7 @@
 ## サービス概要
 AEO Checker は日本語特化のAI検索最適化(AEO: Answer Engine Optimization)診断ツールです。
 URLを入力するだけで、7つのカテゴリ(llms.txt, robots.txt, 構造化データ, メタタグ, コンテンツ構造, 内部リンク, 技術的要素)でスキャンし、0-100点のスコアと改善提案を日本語で提供します。
+llms.txtカテゴリでは llms-full.txt（詳細版）や .well-known/agent.json（A2A Agent Card）の存在もチェックします。
 
 ## API
 - POST /api/scan: URLのAEOスコアを取得（JSON形式で結果を返却）
