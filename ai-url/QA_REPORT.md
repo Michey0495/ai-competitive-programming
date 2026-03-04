@@ -1,26 +1,32 @@
 # QA Report - AEO Checker
 
-Date: 2026-03-05 (QA Pass 2)
+Date: 2026-03-05 (QA Pass 3)
 
 ## Build & Lint
 
 | Check | Status |
 |-------|--------|
 | `npm run build` | PASS |
-| `npm run lint` | PASS |
+| `npm run lint` | PASS (0 errors, 0 warnings) |
 | TypeScript strict mode | PASS |
 
 ## Fixes Applied (This Pass)
 
-1. **a11y: ScanForm input** - Changed `type="text"` to `type="url"`, added `aria-label="診断するURLを入力"`
-2. **a11y: FeedbackWidget textarea** - Added `aria-label="フィードバック内容"`
-3. **Robustness: Feedback API** - Added JSON parse error handling (`request.json()` can throw on malformed input)
+1. **Lint error: setState in useEffect** (ScanHistory.tsx) - `setHistory(getScanHistory())` in `useEffect` triggered `react-hooks/set-state-in-effect`. Replaced with lazy state initializer `useState(() => getScanHistory())`.
+2. **Lint warning: unused variable** (ScanHistory.tsx) - `setHistory` unused after fix #1. Changed to `const [history] = useState(...)`.
+3. **Navigation: full page reload** (ResultDetail.tsx) - "別のURLを診断" used `window.location.href = "/"`. Changed to `router.push("/")` for client-side navigation.
+4. **UX: alert() instead of toast** (ResultDetail.tsx) - Share fallback used `alert()`. Replaced with `toast.success()`/`toast.error()` with Promise handling for clipboard API.
+5. **a11y: ScoreCircle missing label** (ScoreCircle.tsx) - SVG visualization had no accessible label. Added `role="img"` + `aria-label`, `aria-hidden="true"` on SVG.
+6. **a11y: CategoryBar missing aria-expanded** (CategoryBar.tsx) - Toggle buttons lacked expansion state. Added `isExpanded` prop and `aria-expanded` attribute.
 
-## Previous Fixes (Pass 1)
+## Previous Fixes (Pass 1-2)
 
-1. `src/app/guides/technical/page.tsx:21` - Unescaped `'` in "Let's Encrypt" replaced with `&apos;`
-2. `src/lib/scanner.ts:531` - Unused variable `externalCount` removed
+1. Unescaped `'` in "Let's Encrypt" (guides/technical)
+2. Unused variable `externalCount` removed (scanner.ts)
 3. Custom 404, loading, error pages created
+4. ScanForm input changed to `type="url"` with `aria-label`
+5. FeedbackWidget textarea `aria-label` added
+6. Feedback API JSON parse error handling
 
 ## SEO & Metadata
 
@@ -35,84 +41,65 @@ Date: 2026-03-05 (QA Pass 2)
 | `llms.txt` | OK - Service description with API docs |
 | `/.well-known/agent.json` | OK - A2A Agent Card |
 | `/sitemap.xml` | OK - Dynamic, all pages listed |
-| favicon.ico | OK (25KB multi-size) |
+| favicon.ico | OK |
 | OGP image | OK - Dynamic `/api/og` endpoint (Edge runtime) |
-| JSON-LD | OK - WebApplication + FAQPage structured data |
+| JSON-LD | OK - WebApplication + FAQPage + HowTo |
 | keywords | OK - 10 relevant keywords |
 | canonical URL | OK |
+| Guide page metadata | OK - All 7 guides have individual metadata |
 
 ## UI Review
 
-| Area | Status | Notes |
-|------|--------|-------|
-| Design System (black bg) | OK | #000000 background, white text, emerald accent |
-| Card styling | OK | `bg-white/5 border border-white/10` |
-| Hover effects | OK | `transition-all duration-200`, `cursor-pointer` |
-| Typography | OK | 16px+, proper line-height |
-| Responsive layout | OK | `md:` breakpoints for grid layouts |
-| Guide navigation | OK | Tab nav with all 7 guides |
-| Header | OK | Logo + guide link |
-| Footer | OK | 3-column grid with guide links |
-| FAQ section | OK | Expandable `<details>` with arrow indicator |
+| Area | Status |
+|------|--------|
+| Design System (black bg, emerald accent) | OK |
+| Card styling (bg-white/5 border-white/10) | OK |
+| Hover/transition effects | OK |
+| Typography (16px+, 1.5-1.75 line-height) | OK |
+| Responsive (md: breakpoints) | OK |
+| Guide navigation | OK |
+| Header/Footer | OK |
+| FAQ expandable sections | OK |
+| No emojis/icon illustrations | OK |
 
 ## Edge Cases
 
-| Scenario | Status | Notes |
-|----------|--------|-------|
-| Empty URL input | OK | Button disabled, early return |
-| Invalid URL | OK | Toast error "有効なURLを入力してください" |
-| No http prefix | OK | Auto-prefixes `https://` |
-| Scan API failure | OK | Error message displayed via toast |
-| Result not found | OK | "結果が見つかりません" with re-scan prompt |
-| Empty feedback | OK | Early return if message empty |
-| Malformed JSON body | OK | Returns 400 (scan + feedback APIs) |
-| Special characters in URL | OK | URL constructor validates |
-| Fetch timeout | OK | 15s page, 10s llms.txt/robots.txt |
-
-## Performance
-
-| Item | Status | Notes |
-|------|--------|-------|
-| Server Components | OK | Only client components where needed |
-| Static generation | OK | Home + 7 guide pages prerendered |
-| Bundle size | OK | 24MB build output, minimal deps |
-| Font loading | OK | Geist via `next/font/google` (optimized) |
-| Edge runtime | OK | OG image uses edge for fast generation |
+| Scenario | Status |
+|----------|--------|
+| Empty URL input | OK - Button disabled |
+| Invalid URL | OK - Toast error |
+| No http prefix | OK - Auto-prefixes https:// |
+| Scan API failure | OK - Error toast |
+| Result not found | OK - Fallback UI with re-scan prompt |
+| Empty feedback | OK - Early return |
+| Malformed JSON body | OK - Returns 400 |
+| Fetch timeout | OK - 15s page, 10s auxiliary |
 
 ## Accessibility
 
-| Item | Status | Notes |
-|------|--------|-------|
-| Semantic HTML | OK | header, main, footer, nav, article, details/summary |
-| Form labels | OK | `aria-label` on input and textarea |
-| Input type | OK | `type="url"` for URL input |
-| Color contrast | OK | White on black (#fff on #000) |
-| Button states | OK | disabled states on ScanForm |
-| Focus styles | OK | Tailwind default outline-ring |
-| Keyboard navigation | OK | All interactive elements are button/link/input |
-
-## AI-First Compliance
-
 | Item | Status |
 |------|--------|
-| `/api/mcp` endpoint | OK - JSON-RPC 2.0 with tools/list, tools/call |
-| `/.well-known/agent.json` | OK - A2A Agent Card |
-| `/llms.txt` | OK |
-| `/robots.txt` | OK - AI crawlers allowed |
-| Machine-readable API responses | OK - JSON structured |
+| Semantic HTML (header, main, nav, article) | OK |
+| Form labels (aria-label) | OK |
+| URL input type | OK |
+| Color contrast (white on black) | OK |
+| Score circle accessible label | OK |
+| Category toggle aria-expanded | OK |
+| Keyboard navigation | OK |
+| Focus styles | OK |
 
 ## Checklist
 
 - [x] `npm run build` 成功
 - [x] `npm run lint` エラーなし
-- [x] レスポンシブ対応 (md: breakpoints)
+- [x] レスポンシブ対応
 - [x] favicon 設定済み
-- [x] OGP画像設定済み (dynamic /api/og)
+- [x] OGP画像設定済み
 - [x] 404ページ
 - [x] ローディング状態
 - [x] エラー状態
 
 ## Known Limitations (Not Bugs)
 
-1. **In-memory storage** - Results are lost on server restart (MVP design, planned upgrade to Vercel KV)
+1. **In-memory storage** - Results lost on restart (MVP, planned Vercel KV migration)
 2. **No rate limiting** - API endpoints have no rate limits (acceptable for MVP)

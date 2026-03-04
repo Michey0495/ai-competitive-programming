@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import type { ScanResult } from "@/types";
 import { ScoreCircle } from "./ScoreCircle";
 import { CategoryBar } from "./CategoryBar";
+import { addToScanHistory } from "./ScanHistory";
 
 interface ResultDetailProps {
   result: ScanResult;
@@ -13,8 +16,69 @@ export function ResultDetail({ result }: ResultDetailProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     null
   );
+  const [rescanning, setRescanning] = useState(false);
+  const router = useRouter();
 
   const selected = result.categories.find((c) => c.key === selectedCategory);
+
+  async function handleRescan() {
+    setRescanning(true);
+    try {
+      const res = await fetch("/api/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: result.url }),
+      });
+      if (!res.ok) throw new Error("再スキャンに失敗しました");
+      const data = await res.json();
+      addToScanHistory({
+        id: data.id,
+        url: data.url,
+        totalScore: data.totalScore,
+        maxTotalScore: data.maxTotalScore,
+        scannedAt: data.scannedAt,
+      });
+      sessionStorage.setItem(
+        "aeo-prev-score",
+        JSON.stringify({
+          url: result.url,
+          totalScore: result.totalScore,
+          categories: result.categories.map((c) => ({
+            key: c.key,
+            score: c.score,
+          })),
+        })
+      );
+      router.push(`/result/${data.id}`);
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "再スキャンに失敗しました"
+      );
+    } finally {
+      setRescanning(false);
+    }
+  }
+
+  const [prevScore] = useState<{
+    totalScore: number;
+    categories: { key: string; score: number }[];
+  } | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = sessionStorage.getItem("aeo-prev-score");
+      if (!raw) return null;
+      const prev = JSON.parse(raw);
+      if (prev.url !== result.url) return null;
+      sessionStorage.removeItem("aeo-prev-score");
+      return prev;
+    } catch {
+      return null;
+    }
+  });
+
+  const scoreDiff = prevScore
+    ? result.totalScore - prevScore.totalScore
+    : null;
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-8">
@@ -26,6 +90,14 @@ export function ResultDetail({ result }: ResultDetailProps) {
           score={result.totalScore}
           maxScore={result.maxTotalScore}
         />
+        {scoreDiff !== null && scoreDiff !== 0 && (
+          <p
+            className={`text-sm font-medium ${scoreDiff > 0 ? "text-emerald-400" : "text-red-400"}`}
+          >
+            前回から {scoreDiff > 0 ? "+" : ""}
+            {scoreDiff}点
+          </p>
+        )}
         <p className="text-white/60 text-sm">
           {result.totalScore >= 80
             ? "AI検索エンジンへの対応が十分です"
@@ -38,17 +110,24 @@ export function ResultDetail({ result }: ResultDetailProps) {
       {/* Category bars */}
       <div className="space-y-3">
         <h2 className="text-lg font-bold text-white">カテゴリ別スコア</h2>
-        {result.categories.map((cat) => (
-          <CategoryBar
-            key={cat.key}
-            category={cat}
-            onClick={() =>
-              setSelectedCategory(
-                selectedCategory === cat.key ? null : cat.key
-              )
-            }
-          />
-        ))}
+        {result.categories.map((cat) => {
+          const prevCat = prevScore?.categories.find(
+            (c) => c.key === cat.key
+          );
+          return (
+            <CategoryBar
+              key={cat.key}
+              category={cat}
+              prevScore={prevCat?.score}
+              isExpanded={selectedCategory === cat.key}
+              onClick={() =>
+                setSelectedCategory(
+                  selectedCategory === cat.key ? null : cat.key
+                )
+              }
+            />
+          );
+        })}
       </div>
 
       {/* Detail panel */}
@@ -114,12 +193,24 @@ export function ResultDetail({ result }: ResultDetailProps) {
       {/* Actions */}
       <div className="flex flex-wrap gap-3 justify-center">
         <button
-          onClick={() => {
-            window.location.href = "/";
-          }}
+          onClick={() => router.push("/")}
           className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-lg cursor-pointer transition-all duration-200 text-sm"
         >
           別のURLを診断
+        </button>
+        <button
+          onClick={handleRescan}
+          disabled={rescanning}
+          className="px-5 py-2.5 bg-white/5 border border-emerald-400/30 hover:bg-emerald-400/10 text-emerald-400 rounded-lg cursor-pointer transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {rescanning ? (
+            <span className="inline-flex items-center gap-2">
+              <span className="w-3 h-3 border-2 border-emerald-400/30 border-t-emerald-400 rounded-full animate-spin" />
+              再スキャン中...
+            </span>
+          ) : (
+            "再スキャン"
+          )}
         </button>
         <button
           onClick={() => {
@@ -127,8 +218,10 @@ export function ResultDetail({ result }: ResultDetailProps) {
             if (navigator.share) {
               navigator.share({ title: "AEO Checker", text, url: window.location.href });
             } else {
-              navigator.clipboard.writeText(`${text}\n${window.location.href}`);
-              alert("結果をコピーしました");
+              navigator.clipboard.writeText(`${text}\n${window.location.href}`).then(
+                () => toast.success("結果をコピーしました"),
+                () => toast.error("コピーに失敗しました")
+              );
             }
           }}
           className="px-5 py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-lg cursor-pointer transition-all duration-200 text-sm"

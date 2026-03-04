@@ -24,8 +24,8 @@ export function ScoreCircle({
         : "#ef4444";
 
   return (
-    <div className="relative inline-flex items-center justify-center">
-      <svg width={size} height={size} className="-rotate-90">
+    <div className="relative inline-flex items-center justify-center" role="img" aria-label={`スコア: ${score}点 / ${maxScore}点満点`}>
+      <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
         <circle
           cx={size / 2}
           cy={size / 2}

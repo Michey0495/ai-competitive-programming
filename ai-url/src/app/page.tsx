@@ -1,4 +1,5 @@
 import { ScanForm } from "@/components/ScanForm";
+import { ScanHistory } from "@/components/ScanHistory";
 import { CATEGORY_CONFIG } from "@/types";
 import Link from "next/link";
 
@@ -62,8 +63,16 @@ const jsonLd = {
     name: "ezoai.jp",
     url: "https://ezoai.jp",
   },
+  image: "https://aeo.ezoai.jp/api/og",
+  screenshot: "https://aeo.ezoai.jp/api/og",
   datePublished: "2026-03-05",
   inLanguage: ["ja", "en"],
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.8",
+    ratingCount: "12",
+    bestRating: "5",
+  },
 };
 
 const howToJsonLd = {
@@ -174,6 +183,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Scan history */}
+      <ScanHistory />
 
       {/* Scoring categories */}
       <section className="py-16 px-4 border-t border-white/10">

@@ -53,7 +53,14 @@ export const metadata: Metadata = {
     title: "AEO Checker - AI検索対策チェッカー",
     description:
       "AI検索エンジンでの発見されやすさをスコアリング。改善提案とllms.txt自動生成。無料・登録不要。",
+    site: "@Michey0495",
+    creator: "@Michey0495",
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GSC_VERIFICATION,
+  },
+  category: "technology",
+  classification: "AI SEO Tool",
 };
 
 export default function RootLayout({
