@@ -12,9 +12,37 @@ const GUIDE_LINKS = [
   { href: "/guides/technical", label: "技術的要素", desc: "HTTPS, 速度, モバイル対応" },
 ];
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "AEO Checker",
+  alternateName: "AI検索対策チェッカー",
+  url: "https://aeo.ezoai.jp",
+  description:
+    "URLを入力するだけでAI検索エンジン(ChatGPT, Perplexity, Claude, Gemini)での発見されやすさを100点満点でスコアリング。日本語で具体的な改善アクションを提示。",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Web",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "JPY",
+  },
+  featureList: [
+    "AI検索エンジン最適化スコアリング",
+    "llms.txt自動生成",
+    "robots.txt自動生成",
+    "7カテゴリ診断",
+    "日本語改善提案",
+  ],
+};
+
 export default function Home() {
   return (
     <div className="min-h-[calc(100vh-64px)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className="py-24 px-4">
         <div className="max-w-3xl mx-auto text-center space-y-8">
@@ -28,6 +56,9 @@ export default function Home() {
             URLを入力するだけで、ChatGPT・Perplexity・Claude・Gemini等の
             AI検索エンジンでの発見されやすさを100点満点でスコアリング。
             日本語で具体的な改善アクションを提示します。
+          </p>
+          <p className="text-white/40 text-sm">
+            無料・登録不要・30秒で診断完了
           </p>
           <ScanForm />
         </div>

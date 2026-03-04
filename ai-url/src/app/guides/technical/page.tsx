@@ -18,7 +18,7 @@ export default function TechnicalGuide() {
       <h2>HTTPS</h2>
       <p>
         HTTPSは必須です。暗号化されていないHTTPサイトは、AI検索エンジンからの信頼度が下がります。
-        無料のLet's Encryptで簡単に導入できます。
+        無料のLet&apos;s Encryptで簡単に導入できます。
       </p>
 
       <h2>ページ速度</h2>

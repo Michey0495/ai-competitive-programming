@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { FeedbackWidget } from "@/components/FeedbackWidget";
 import Script from "next/script";
 
 const geist = Geist({ subsets: ["latin"] });
@@ -12,25 +13,41 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aeo.ezoai.jp";
 
 export const metadata: Metadata = {
   title: {
-    default: "AEO Checker - AI検索対策チェッカー",
+    default: "AEO Checker - AI検索対策チェッカー | 無料AI検索最適化診断",
     template: "%s | AEO Checker",
   },
   description:
-    "URLを入力するだけでAI検索エンジン(ChatGPT, Perplexity, Claude, Gemini)での発見されやすさを100点満点でスコアリング。日本語で具体的な改善アクションを提示。llms.txt/robots.txtの自動生成機能付き。",
+    "URLを入力するだけでAI検索エンジン(ChatGPT, Perplexity, Claude, Gemini)での発見されやすさを100点満点でスコアリング。日本語で具体的な改善アクションを提示。llms.txt/robots.txtの自動生成機能付き。無料・登録不要。",
+  keywords: [
+    "AEO",
+    "AI検索対策",
+    "AI検索エンジン最適化",
+    "llms.txt",
+    "ChatGPT SEO",
+    "Perplexity対策",
+    "AI検索",
+    "AEO Checker",
+    "AI Engine Optimization",
+    "robots.txt AI",
+  ],
   metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: siteUrl,
+  },
   openGraph: {
     type: "website",
     siteName: "AEO Checker",
     url: siteUrl,
     title: "AEO Checker - AI検索対策チェッカー",
     description:
-      "URLを入力するだけでAI検索エンジンでの発見されやすさを100点満点でスコアリング。日本語で改善アクションを提示。",
+      "URLを入力するだけでAI検索エンジンでの発見されやすさを100点満点でスコアリング。日本語で改善アクションを提示。無料・登録不要。",
+    locale: "ja_JP",
   },
   twitter: {
     card: "summary_large_image",
     title: "AEO Checker - AI検索対策チェッカー",
     description:
-      "AI検索エンジンでの発見されやすさをスコアリング。改善提案とllms.txt自動生成。",
+      "AI検索エンジンでの発見されやすさをスコアリング。改善提案とllms.txt自動生成。無料・登録不要。",
   },
 };
 
@@ -58,6 +75,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <Toaster richColors position="top-center" />
+        <FeedbackWidget repoName="ai-url" />
       </body>
     </html>
   );

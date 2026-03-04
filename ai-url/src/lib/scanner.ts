@@ -528,14 +528,10 @@ export async function checkInternalLinks(
   // Internal links
   const links = $("a[href]");
   let internalCount = 0;
-  let externalCount = 0;
-
   links.each((_, el) => {
     const href = $(el).attr("href") ?? "";
     if (href.startsWith("/") || href.startsWith(baseUrl)) {
       internalCount++;
-    } else if (href.startsWith("http")) {
-      externalCount++;
     }
   });
 
