@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { kv } from "@vercel/kv";
 import { nanoid } from "nanoid";
 import { questions } from "@/data/questions";
 import type { DiagnosisResult, DiagnoseRequest } from "@/types";
 
-const client = new Anthropic();
+const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:1.5b";
 
 const COLOR_SCHEMES = ["red", "blue", "green", "purple", "yellow", "pink"] as const;
 
@@ -45,14 +45,21 @@ export async function POST(req: NextRequest) {
 
     const prompt = buildPrompt(answers);
 
-    const message = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 512,
-      messages: [{ role: "user", content: prompt }],
+    const res = await fetch(`${OLLAMA_URL}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: OLLAMA_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        stream: false,
+        options: { num_ctx: 2048, temperature: 0.7 },
+      }),
     });
-
-    const text =
-      message.content[0].type === "text" ? message.content[0].text : "";
+    if (!res.ok) {
+      return NextResponse.json({ error: "AI生成に失敗しました。" }, { status: 502 });
+    }
+    const data = await res.json();
+    const text = data.message?.content ?? "";
 
     // Extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -84,10 +91,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ id });
   } catch (err) {
-    console.error("Diagnose error:", err);
+    console.error("Ollama error:", err);
     return NextResponse.json(
-      { error: "診断処理に失敗しました" },
-      { status: 500 }
+      { error: "AIサーバーに接続できません。" },
+      { status: 503 }
     );
   }
 }

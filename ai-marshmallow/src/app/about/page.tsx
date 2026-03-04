@@ -69,7 +69,7 @@ export default function AboutPage() {
       </div>
 
       <div className="text-center text-xs text-white/30 space-y-1">
-        <p>本サービスはAnthropicのClaude APIを使用しています</p>
+        <p>本サービスはAIを使用しています</p>
         <p>不適切なコンテンツはフィルタリングされます</p>
       </div>
     </div>

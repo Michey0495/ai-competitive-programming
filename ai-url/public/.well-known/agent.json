@@ -1,0 +1,28 @@
+{
+  "name": "AEO Checker",
+  "description": "AI検索対策チェッカー。URLを入力するだけでAI検索エンジンでの発見されやすさを100点満点でスコアリング。日本語で改善アクションを提示。",
+  "url": "https://aeo.ezoai.jp",
+  "provider": {
+    "organization": "ezoai.jp"
+  },
+  "version": "1.0.0",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "skills": [
+    {
+      "id": "check_aeo_score",
+      "name": "AEOスコアチェック",
+      "description": "URLを指定してAI検索最適化(AEO)スコアを取得。7カテゴリで0-100点のスコアリングと改善提案を返す。"
+    },
+    {
+      "id": "generate_llms_txt",
+      "name": "llms.txt自動生成",
+      "description": "URLを指定してllms.txtファイルを自動生成。AI検索エンジンがサイトを理解するための説明ファイル。"
+    }
+  ],
+  "defaultInputModes": ["text"],
+  "defaultOutputModes": ["text"],
+  "mcpEndpoint": "/api/mcp"
+}

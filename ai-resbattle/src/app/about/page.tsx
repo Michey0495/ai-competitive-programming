@@ -37,7 +37,7 @@ export default function AboutPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Anthropic社のClaude AI（Claude Haiku 4.5）を使用しています。
+              AIを使用しています。
               AI評価は一般的な知識をもとにした参考情報です。
               実際のレストランの品質は個人の主観や時期によって異なります。
             </p>

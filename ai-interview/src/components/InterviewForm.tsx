@@ -26,7 +26,7 @@ export function InterviewForm() {
       const res = await fetch("/api/interview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form }),
       });
       const data = await res.json();
       if (!res.ok) {

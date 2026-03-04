@@ -131,11 +131,11 @@ export function RoastForm() {
       >
         {loading ? (
           <span className="flex items-center gap-2">
-            <span className="animate-spin text-xl">🔥</span>
+            <span className="animate-spin text-xl">*</span>
             AIがロースト中...
           </span>
         ) : (
-          "🔥 ロースト される"
+          "ロースト される"
         )}
       </Button>
     </form>

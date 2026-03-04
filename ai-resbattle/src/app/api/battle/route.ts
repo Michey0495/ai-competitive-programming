@@ -57,8 +57,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ id });
   } catch (e) {
     console.error("Battle generation failed:", e);
+    const message = "AI判定に失敗しました。しばらくしてからお試しください。";
     return NextResponse.json(
-      { error: "AI判定に失敗しました。しばらくしてからお試しください。" },
+      { error: message },
       { status: 500 }
     );
   }

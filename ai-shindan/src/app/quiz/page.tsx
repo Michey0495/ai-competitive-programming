@@ -37,11 +37,14 @@ export default function QuizPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ answers: newAnswers }),
         });
-        if (!res.ok) throw new Error("診断に失敗しました");
+        if (!res.ok) {
+          const data = await res.json().catch(() => null);
+          throw new Error(data?.error || "診断に失敗しました");
+        }
         const data = await res.json();
         router.push(`/result/${data.id}`);
-      } catch {
-        toast.error("診断中にエラーが発生しました。もう一度お試しください。");
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "診断中にエラーが発生しました。もう一度お試しください。");
         setLoading(false);
       }
     } else {
@@ -53,7 +56,7 @@ export default function QuizPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-950 via-purple-950/30 to-gray-950">
         <div className="text-center">
-          <div className="text-5xl mb-6 animate-pulse">🧠</div>
+          <div className="text-5xl mb-6 animate-pulse">*</div>
           <p className="text-white text-xl font-bold mb-2">AIが分析中...</p>
           <p className="text-gray-400 text-sm">あなたの回答を深く読み解いています</p>
         </div>

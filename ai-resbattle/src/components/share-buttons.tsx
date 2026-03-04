@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Share2, Check } from "lucide-react";
 
 interface ShareButtonsProps {
   restaurant1: string;
@@ -52,17 +51,7 @@ export function ShareButtons({ restaurant1, restaurant2, winner, url }: ShareBut
         LINE でシェア
       </Button>
       <Button variant="outline" size="sm" onClick={copyLink} disabled={copied}>
-        {copied ? (
-          <>
-            <Check className="mr-1 h-3 w-3 text-green-500" />
-            コピーしました
-          </>
-        ) : (
-          <>
-            <Share2 className="mr-1 h-3 w-3" />
-            リンクをコピー
-          </>
-        )}
+        {copied ? "コピーしました" : "リンクをコピー"}
       </Button>
     </div>
   );

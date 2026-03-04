@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScoreBar } from "./score-bar";
 import { ShareButtons } from "./share-buttons";
-import { Trophy } from "lucide-react";
+
 
 interface BattleResultProps {
   battle: Battle;
@@ -25,7 +25,7 @@ export function BattleResult({ battle, url }: BattleResultProps) {
       {/* 勝者発表 */}
       <Card className="border-2 border-yellow-400 bg-yellow-50 dark:bg-yellow-950">
         <CardContent className="pt-6 text-center space-y-2">
-          <Trophy className="h-10 w-10 text-yellow-500 mx-auto" />
+          <span className="text-3xl block">WIN</span>
           <p className="text-sm text-muted-foreground">AI判定結果</p>
           <p className="text-2xl font-bold">
             {winnerName ? `「${winnerName}」の勝利！` : "引き分け！"}

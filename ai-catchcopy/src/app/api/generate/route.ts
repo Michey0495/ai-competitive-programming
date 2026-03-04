@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { kv } from "@vercel/kv";
 import { nanoid } from "nanoid";
 import type { GenerateRequest, CatchcopyResult, Catchcopy } from "@/types";
 
-const anthropic = new Anthropic();
+const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:1.5b";
 
 export async function POST(request: Request) {
   try {
@@ -54,13 +54,22 @@ export async function POST(request: Request) {
   "shareText": "【AIキャッチコピー】「${body.productName}」のキャッチコピーをAIが生成！\\n\\n1つ目のキャッチコピーをここに入れてください\\n\\n#AIキャッチコピー #catchcopy"
 }`;
 
-    const message = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
+    const res = await fetch(`${OLLAMA_URL}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: OLLAMA_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        stream: false,
+        options: { num_ctx: 2048, temperature: 0.7 },
+      }),
     });
+    if (!res.ok) {
+      return NextResponse.json({ error: "AI生成に失敗しました。" }, { status: 502 });
+    }
+    const data = await res.json();
+    const text = data.message?.content ?? "";
 
-    const text = message.content[0].type === "text" ? message.content[0].text : "";
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       return NextResponse.json({ error: "AIの応答を解析できませんでした" }, { status: 500 });

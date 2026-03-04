@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { kv } from "@vercel/kv";
 import { nanoid } from "nanoid";
 import type { RoastInput, RoastResult } from "@/types";
 
-const client = new Anthropic();
+const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:1.5b";
 
 const RATE_LIMIT = 5;
 const RATE_WINDOW = 10 * 60; // 10 minutes
@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json().catch(() => null);
+
   if (!body?.name?.trim()) {
     return NextResponse.json({ error: "名前は必須です" }, { status: 400 });
   }
@@ -51,13 +52,7 @@ export async function POST(req: NextRequest) {
     .filter(Boolean)
     .join("\n");
 
-  const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 800,
-    messages: [
-      {
-        role: "user",
-        content: `あなたは愛のある毒舌キャラです。以下のプロフィールを読んで、愛情たっぷりの面白いツッコミ（ロースト）を日本語でしてください。
+  const prompt = `あなたは愛のある毒舌キャラです。以下のプロフィールを読んで、愛情たっぷりの面白いツッコミ（ロースト）を日本語でしてください。
 
 ルール：
 - 傷つけず、笑いを取る「愛のあるツッコミ」にする
@@ -70,24 +65,39 @@ export async function POST(req: NextRequest) {
 プロフィール：
 ${profileText}
 
-ロースト開始：`,
-      },
-    ],
-  });
+ロースト開始：`;
 
-  const roastText =
-    message.content[0].type === "text" ? message.content[0].text : "";
+  try {
+    const res = await fetch(`${OLLAMA_URL}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: OLLAMA_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        stream: false,
+        options: { num_ctx: 2048, temperature: 0.7 },
+      }),
+    });
+    if (!res.ok) {
+      return NextResponse.json({ error: "AI生成に失敗しました。" }, { status: 502 });
+    }
+    const data = await res.json();
+    const roastText = data.message?.content ?? "";
 
-  const id = nanoid(10);
-  const result: RoastResult = {
-    id,
-    input,
-    roast: roastText,
-    createdAt: new Date().toISOString(),
-  };
+    const id = nanoid(10);
+    const result: RoastResult = {
+      id,
+      input,
+      roast: roastText,
+      createdAt: new Date().toISOString(),
+    };
 
-  await kv.set(`roast:${id}`, result, { ex: 60 * 60 * 24 * 365 }); // 365 days
-  await kv.zadd("roast:feed", { score: Date.now(), member: id });
+    await kv.set(`roast:${id}`, result, { ex: 60 * 60 * 24 * 365 }); // 365 days
+    await kv.zadd("roast:feed", { score: Date.now(), member: id });
 
-  return NextResponse.json({ id });
+    return NextResponse.json({ id });
+  } catch (err) {
+    console.error("Ollama error:", err);
+    return NextResponse.json({ error: "AIサーバーに接続できません。" }, { status: 503 });
+  }
 }

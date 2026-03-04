@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
           },
         ],
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("MCP ask_question error:", error);
       return jsonRpcError(id, -32603, "Internal error generating answer");
     }

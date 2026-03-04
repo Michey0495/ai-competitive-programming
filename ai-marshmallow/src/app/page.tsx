@@ -22,81 +22,67 @@ async function RecentQAs() {
   );
 }
 
-const FEATURES = [
-  { label: "アカウント不要" },
-  { label: "完全無料" },
-  { label: "AI即回答" },
-] as const;
-
 export default function HomePage() {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10 space-y-10">
+    <div className="min-h-screen">
       {/* Hero */}
-      <div className="text-center space-y-4">
-        <div className="flex justify-center">
-          <span className="inline-block w-3 h-3 rounded-full bg-pink-400" />
+      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(236,72,153,0.3),transparent)]" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-[120px] animate-[float_8s_ease-in-out_infinite]" />
+          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-pink-400/5 rounded-full blur-[100px] animate-[float-reverse_12s_ease-in-out_infinite]" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
         </div>
-        <h1 className="text-2xl font-bold text-white leading-snug">
-          誰にも言えないこと、<br />
-          マシュに聞いてみませんか?
-        </h1>
-        <p className="text-white/60 text-sm leading-relaxed">
-          匿名でOK。恋愛・悩み・くだらない疑問、なんでも。<br className="sm:hidden" />
-          AIキャラクター「マシュ」が温かく・個性的に回答します。
-        </p>
-        {/* Feature badges */}
-        <div className="flex justify-center gap-3 flex-wrap">
-          {FEATURES.map(({ label }) => (
-            <span
-              key={label}
-              className="inline-flex items-center gap-1.5 text-xs bg-white/5 text-white/60 rounded-full px-3 py-1.5 border border-white/10"
-            >
-              {label}
-            </span>
-          ))}
+        <div className="relative text-center px-4 animate-[fade-in-up_0.8s_ease-out]">
+          <p className="text-pink-400/80 text-xs font-mono tracking-[0.3em] uppercase mb-6">AI Marshmallow</p>
+          <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">AIマシュマロ</h1>
+          <p className="text-white/40 text-lg md:text-xl max-w-lg mx-auto leading-relaxed">誰にも言えないこと、マシュに聞いてみませんか?</p>
         </div>
-      </div>
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent" />
+      </section>
 
-      {/* Form */}
-      <div className="bg-white/5 rounded-xl border border-white/10 p-6">
-        <h2 className="text-sm font-semibold text-white mb-1">マシュに質問する</h2>
-        <p className="text-xs text-white/40 mb-4">例:「失恋してつらい」「なんで空は青いの?」「仕事やめたい」</p>
-        <QuestionForm />
-      </div>
-
-      <Separator className="bg-white/10" />
-
-      {/* Recent Q&As -- social proof */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold text-white">みんなの質問・回答</h2>
-          <span className="text-xs text-white/40">(匿名)</span>
+      <div className="max-w-2xl mx-auto px-4 py-10 space-y-10">
+        {/* Form */}
+        <div className="bg-white/5 rounded-xl border border-white/10 p-6">
+          <h2 className="text-sm font-semibold text-white mb-1">マシュに質問する</h2>
+          <p className="text-xs text-white/40 mb-4">例:「失恋してつらい」「なんで空は青いの?」「仕事やめたい」</p>
+          <QuestionForm />
         </div>
-        <Suspense fallback={
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-5 space-y-4 animate-pulse">
-                <div className="flex gap-3">
-                  <div className="shrink-0 w-8 h-8 rounded-full bg-white/10" />
-                  <div className="flex-1 space-y-2 pt-1">
-                    <div className="h-3 bg-white/10 rounded w-3/4" />
-                    <div className="h-3 bg-white/10 rounded w-1/2" />
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="shrink-0 w-8 h-8 rounded-full bg-pink-500/20" />
-                  <div className="flex-1 space-y-2 pt-1">
-                    <div className="h-3 bg-white/10 rounded w-full" />
-                    <div className="h-3 bg-white/10 rounded w-5/6" />
-                    <div className="h-3 bg-white/10 rounded w-3/4" />
-                  </div>
-                </div>
-              </div>
-            ))}
+
+        <Separator className="bg-white/10" />
+
+        {/* Recent Q&As -- social proof */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-white">みんなの質問・回答</h2>
+            <span className="text-xs text-white/40">(匿名)</span>
           </div>
-        }>
-          <RecentQAs />
-        </Suspense>
+          <Suspense fallback={
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-5 space-y-4 animate-pulse">
+                  <div className="flex gap-3">
+                    <div className="shrink-0 w-8 h-8 rounded-full bg-white/10" />
+                    <div className="flex-1 space-y-2 pt-1">
+                      <div className="h-3 bg-white/10 rounded w-3/4" />
+                      <div className="h-3 bg-white/10 rounded w-1/2" />
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="shrink-0 w-8 h-8 rounded-full bg-pink-500/20" />
+                    <div className="flex-1 space-y-2 pt-1">
+                      <div className="h-3 bg-white/10 rounded w-full" />
+                      <div className="h-3 bg-white/10 rounded w-5/6" />
+                      <div className="h-3 bg-white/10 rounded w-3/4" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          }>
+            <RecentQAs />
+          </Suspense>
+        </div>
       </div>
     </div>
   );

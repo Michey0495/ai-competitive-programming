@@ -1,0 +1,8 @@
+FROM qwen2.5:1.5b
+
+# Optimized for Intel Mac Mini (16GB RAM, i7-4578U)
+# ~986 MB RAM usage, ~4.5 tokens/second
+PARAMETER num_ctx 2048
+PARAMETER temperature 0.7
+PARAMETER top_p 0.9
+PARAMETER num_thread 4

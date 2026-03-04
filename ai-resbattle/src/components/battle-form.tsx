@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Swords, Loader2 } from "lucide-react";
 
 export function BattleForm() {
   const router = useRouter();
@@ -59,7 +58,7 @@ export function BattleForm() {
         </div>
 
         <div className="pb-2">
-          <Swords className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
+          <span className="text-lg font-bold text-muted-foreground">VS</span>
         </div>
 
         <div className="space-y-2">
@@ -83,17 +82,7 @@ export function BattleForm() {
         size="lg"
         disabled={loading || !restaurant1.trim() || !restaurant2.trim()}
       >
-        {loading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            AI判定中...
-          </>
-        ) : (
-          <>
-            <Swords className="mr-2 h-4 w-4" />
-            バトル開始！
-          </>
-        )}
+        {loading ? "AI判定中..." : "バトル開始!"}
       </Button>
     </form>
   );

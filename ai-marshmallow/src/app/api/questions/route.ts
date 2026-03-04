@@ -40,7 +40,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "質問は280文字以内にしてください" }, { status: 400 });
     }
 
-    const answer = await generateAnswer(content);
+    let answer: string;
+    try {
+      answer = await generateAnswer(content);
+    } catch (error: unknown) {
+      console.error("AI generation error:", error);
+      throw error;
+    }
     const question: Question = {
       id: nanoid(8),
       content,

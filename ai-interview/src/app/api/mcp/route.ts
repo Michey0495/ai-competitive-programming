@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { kv } from "@vercel/kv";
 import { nanoid } from "nanoid";
 import type { InterviewResult } from "@/types";
+
+const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:1.5b";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-interview.ezoai.jp";
@@ -78,7 +80,6 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      const anthropic = new Anthropic();
       const prompt = `あなたは大手企業の採用面接官です。厳しくも公正な目で候補者を評価してください。
 
 以下の候補者情報をもとに、模擬面接の評価を行ってください。
@@ -106,14 +107,25 @@ ${args.motivation ? `- 志望動機: ${args.motivation}` : ""}
 
 JSONのみを出力してください。`;
 
-      const message = await anthropic.messages.create({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 1024,
-        messages: [{ role: "user", content: prompt }],
+      const res = await fetch(`${OLLAMA_URL}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: OLLAMA_MODEL,
+          messages: [{ role: "user", content: prompt }],
+          stream: false,
+          options: { num_ctx: 2048, temperature: 0.7 },
+        }),
       });
-
-      const text =
-        message.content[0].type === "text" ? message.content[0].text : "";
+      if (!res.ok) {
+        return NextResponse.json({
+          jsonrpc: "2.0",
+          id: body.id,
+          error: { code: -32000, message: "AI生成に失敗しました" },
+        });
+      }
+      const data = await res.json();
+      const text = data.message?.content ?? "";
 
       let parsed;
       try {

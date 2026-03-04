@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { kv } from "@vercel/kv";
 import { nanoid } from "nanoid";
 import type { InterviewInput, InterviewResult } from "@/types";
+
+const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:1.5b";
 
 const RATE_LIMIT = 5;
 const RATE_WINDOW = 600; // 10 minutes
@@ -44,8 +46,6 @@ export async function POST(req: NextRequest) {
       selfpr: String(selfpr ?? "").slice(0, 500),
       motivation: String(motivation ?? "").slice(0, 500),
     };
-
-    const anthropic = new Anthropic();
 
     const prompt = `あなたは大手企業の採用面接官です。厳しくも公正な目で候補者を評価してください。
 
@@ -90,14 +90,21 @@ ${input.motivation ? `- 志望動機: ${input.motivation}` : ""}
 - 評価は厳しめに。甘い評価は候補者のためにならない
 - アドバイスは具体的かつ実践的に`;
 
-    const message = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
+    const res = await fetch(`${OLLAMA_URL}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: OLLAMA_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        stream: false,
+        options: { num_ctx: 2048, temperature: 0.7 },
+      }),
     });
-
-    const text =
-      message.content[0].type === "text" ? message.content[0].text : "";
+    if (!res.ok) {
+      return NextResponse.json({ error: "AI生成に失敗しました。" }, { status: 502 });
+    }
+    const data = await res.json();
+    const text = data.message?.content ?? "";
 
     let parsed;
     try {

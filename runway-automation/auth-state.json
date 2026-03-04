@@ -1,0 +1,123 @@
+{
+  "cookies": [
+    {
+      "name": "_GRECAPTCHA",
+      "value": "09AKhCRwg3C-zhiU9jUXsiqbh7o_Q6GTO8y9yZ1iD6BBcKlmwNPyKnmTIK7DvfuH0rH-_ejDPgI2dQRIrfis9JwbY",
+      "domain": "www.google.com",
+      "path": "/recaptcha",
+      "expires": 1788168159.176194,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "runway_consent",
+      "value": "%7B%22v%22%3A1%2C%22analytics%22%3Atrue%2C%22ads%22%3Atrue%2C%22gpc%22%3Afalse%2C%22ts%22%3A1772615601459%7D",
+      "domain": ".runwayml.com",
+      "path": "/",
+      "expires": 1807175601.460106,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gcl_au",
+      "value": "1.1.756952692.1772615602",
+      "domain": ".runwayml.com",
+      "path": "/",
+      "expires": 1780391602,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "m",
+      "value": "131319ba-2e3f-4bfa-a2dd-0919daf1451d1c6270",
+      "domain": "m.stripe.com",
+      "path": "/",
+      "expires": 1807176158.50148,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "__Host-GAPS",
+      "value": "1:teoeYFC5KXTUAle0HqhakqEHp7fiRg:uxYF0tzri3I_e7Je",
+      "domain": "accounts.google.com",
+      "path": "/",
+      "expires": 1807175607.336708,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__stripe_mid",
+      "value": "0780f2ed-0ab0-47ad-b630-3d0916309eee415716",
+      "domain": ".app.runwayml.com",
+      "path": "/",
+      "expires": 1804152158,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "__stripe_sid",
+      "value": "991403ff-768d-4c7d-b9c9-da4947a7f3605752cf",
+      "domain": ".app.runwayml.com",
+      "path": "/",
+      "expires": 1772617958,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "OTZ",
+      "value": "8505193_20_20__20_",
+      "domain": "accounts.google.com",
+      "path": "/",
+      "expires": 1775207609,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "NID",
+      "value": "529=i67k4FEMIVwTfbfPJ2Nb74sKaOhF724WSHQHEb6WX0mNWKJPcjWu-tcao6Uwd3lcYheGYEGIL_AkpWIxlg-g1V8Jo5CL_2zY-m0a_aOKOc4fBIV9GK_mabH0PnnpSy8fF_qYtHHhp0R_2MZkpJU-J0qgNAwSW5s1zIjFUUwHDRszvsKtkHH0yLR2G7qoDWCD5n7RokI94IXd8cG8Xg",
+      "domain": ".google.com",
+      "path": "/",
+      "expires": 1788426809.814255,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "mp_7962d3f224bc0582e4da3a7db2b66031_mixpanel",
+      "value": "%7B%22distinct_id%22%3A%22%24device%3A0a79e4dc-e582-48e6-aa1d-7eff293111c7%22%2C%22%24device_id%22%3A%220a79e4dc-e582-48e6-aa1d-7eff293111c7%22%2C%22%24initial_referrer%22%3A%22%24direct%22%2C%22%24initial_referring_domain%22%3A%22%24direct%22%2C%22__mps%22%3A%7B%7D%2C%22__mpso%22%3A%7B%22%24initial_referrer%22%3A%22%24direct%22%2C%22%24initial_referring_domain%22%3A%22%24direct%22%7D%2C%22__mpus%22%3A%7B%7D%2C%22__mpa%22%3A%7B%7D%2C%22__mpu%22%3A%7B%7D%2C%22__mpr%22%3A%5B%5D%2C%22__mpap%22%3A%5B%5D%7D",
+      "domain": ".runwayml.com",
+      "path": "/",
+      "expires": 1804152156,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://app.runwayml.com",
+      "localStorage": [
+        {
+          "name": "_gcl_ls",
+          "value": "{\"schema\":\"gcl\",\"version\":1,\"gcl_ctr\":{\"value\":{\"value\":0,\"timeouts\":0,\"errors\":0,\"creationTimeMs\":1772615601943},\"expires\":1780391601943}}"
+        },
+        {
+          "name": "RW_CLIENT_ID",
+          "value": "af89721b-9651-4ac1-a94d-276de1ecba55"
+        },
+        {
+          "name": "RW_PROD_localAppleUserRecords",
+          "value": "{}"
+        }
+      ]
+    }
+  ]
+}

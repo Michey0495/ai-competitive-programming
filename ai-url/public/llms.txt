@@ -1,0 +1,24 @@
+# AEO Checker - AI検索対策チェッカー
+> URLを入力するだけでAI検索エンジン(ChatGPT, Perplexity, Claude, Gemini等)での発見されやすさを100点満点でスコアリング。日本語で具体的な改善アクションを提示。llms.txt/robots.txtの自動生成機能付き。
+
+## サービス概要
+AEO Checker は日本語特化のAI検索最適化(AEO: Answer Engine Optimization)診断ツールです。
+URLを入力するだけで、7つのカテゴリ(llms.txt, robots.txt, 構造化データ, メタタグ, コンテンツ構造, 内部リンク, 技術的要素)でスキャンし、0-100点のスコアと改善提案を日本語で提供します。
+
+## API
+- POST /api/scan: URLのAEOスコアを取得（JSON形式で結果を返却）
+- POST /api/generate: llms.txt/robots.txtファイルを自動生成
+- POST /api/mcp: MCP JSON-RPCエンドポイント（AIエージェント向け）
+
+## MCP Tools
+- check_aeo_score: URLを指定してAEOスコアを取得
+- generate_llms_txt: URLを指定してllms.txtを自動生成
+
+## ガイド
+- /guides/llms-txt: llms.txtの書き方
+- /guides/robots-txt-ai: robots.txtのAIクローラー設定
+- /guides/structured-data: 構造化データ(JSON-LD)の実装
+- /guides/meta-tags: メタタグ最適化
+- /guides/content-structure: AI向けコンテンツ構造
+- /guides/sitemap: サイトマップと内部リンク
+- /guides/technical: 技術的要素(HTTPS, 速度, モバイル対応)

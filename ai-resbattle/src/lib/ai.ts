@@ -1,9 +1,7 @@
-import Anthropic from "@anthropic-ai/sdk";
 import type { Battle, CategoryScore } from "./types";
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:1.5b";
 
 const CATEGORIES = ["味・品質", "コスパ", "雰囲気", "サービス", "アクセス"];
 
@@ -37,16 +35,23 @@ export async function generateBattle(
   "summary": "バトルの総括コメント（100字以内）"
 }`;
 
-  const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: prompt }],
+  const res = await fetch(`${OLLAMA_URL}/api/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: OLLAMA_MODEL,
+      messages: [
+        { role: "user", content: prompt },
+      ],
+      stream: false,
+      options: { num_ctx: 2048, temperature: 0.7 },
+    }),
   });
+  if (!res.ok) throw new Error("Ollama request failed");
+  const data = await res.json();
+  const text = data.message?.content ?? "";
 
-  const content = message.content[0];
-  if (content.type !== "text") throw new Error("Unexpected response type");
-
-  const jsonText = content.text.trim().replace(/^```json\n?|```$/g, "");
+  const jsonText = text.trim().replace(/^```json\n?|```$/g, "");
   let parsed: {
     categories: CategoryScore[];
     comment1: string;
