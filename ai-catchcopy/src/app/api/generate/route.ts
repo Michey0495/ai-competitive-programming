@@ -1,14 +1,54 @@
-import { NextResponse } from "next/server";
-import { kv } from "@vercel/kv";
+import { NextRequest, NextResponse } from "next/server";
 import { nanoid } from "nanoid";
+import { callAI, buildCatchcopyPrompt } from "@/lib/ai";
 import type { GenerateRequest, CatchcopyResult, Catchcopy } from "@/types";
 
-const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:1.5b";
+const RATE_LIMIT = 5;
+const RATE_WINDOW_SEC = 600;
+const memRateMap = new Map<string, { count: number; resetAt: number }>();
 
-export async function POST(request: Request) {
+async function isRateLimited(ip: string): Promise<boolean> {
   try {
-    const body: GenerateRequest = await request.json();
+    if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
+      const { kv } = await import("@vercel/kv");
+      const key = `ratelimit:catchcopy:api:${ip}`;
+      const count = await kv.incr(key);
+      if (count === 1) {
+        await kv.expire(key, RATE_WINDOW_SEC);
+      }
+      return count > RATE_LIMIT;
+    }
+  } catch {
+    // Fall through
+  }
+  const now = Date.now();
+  const entry = memRateMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    memRateMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_SEC * 1000 });
+    return false;
+  }
+  if (entry.count >= RATE_LIMIT) return true;
+  entry.count++;
+  return false;
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+
+    if (await isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "利用回数の上限に達しました。10分後に再度お試しください。" },
+        { status: 429 }
+      );
+    }
+
+    let body: GenerateRequest;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    }
 
     if (!body.productName?.trim() || !body.description?.trim() || !body.targetAudience?.trim() || !body.tone) {
       return NextResponse.json(
@@ -19,56 +59,20 @@ export async function POST(request: Request) {
 
     const validTones = ["professional", "casual", "playful", "elegant", "bold"];
     if (!validTones.includes(body.tone)) {
-      return NextResponse.json(
-        { error: "無効なトーンです" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "無効なトーンです" }, { status: 400 });
     }
 
     if (body.productName.length > 100 || body.description.length > 500 || body.targetAudience.length > 200) {
-      return NextResponse.json(
-        { error: "入力が長すぎます" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "入力が長すぎます" }, { status: 400 });
     }
 
-    const prompt = `あなたはトップクラスのコピーライターです。以下の商品・サービス情報をもとに、日本語のキャッチコピーを5案生成してください。
-
-## 商品・サービス情報
-- 名前: ${body.productName}
-- 説明: ${body.description}
-- ターゲット: ${body.targetAudience}
-- トーン: ${body.tone}
-
-## ルール
-- 各キャッチコピーは20文字以内を目安（最大30文字）
-- 短く、記憶に残る表現
-- 5案それぞれ異なるアプローチで
-- 各案にコンセプト（30文字以内の解説）を付与
-
-## 出力形式（JSON のみ、説明不要）
-{
-  "catchcopies": [
-    { "text": "キャッチコピー", "concept": "コンセプト解説" }
-  ],
-  "shareText": "【AIキャッチコピー】「${body.productName}」のキャッチコピーをAIが生成！\\n\\n1つ目のキャッチコピーをここに入れてください\\n\\n#AIキャッチコピー #catchcopy"
-}`;
-
-    const res = await fetch(`${OLLAMA_URL}/api/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: OLLAMA_MODEL,
-        messages: [{ role: "user", content: prompt }],
-        stream: false,
-        options: { num_ctx: 2048, temperature: 0.7 },
-      }),
+    const prompt = buildCatchcopyPrompt({
+      productName: body.productName,
+      description: body.description,
+      targetAudience: body.targetAudience,
+      tone: body.tone,
     });
-    if (!res.ok) {
-      return NextResponse.json({ error: "AI生成に失敗しました。" }, { status: 502 });
-    }
-    const data = await res.json();
-    const text = data.message?.content ?? "";
+    const text = await callAI(prompt);
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
@@ -103,6 +107,7 @@ export async function POST(request: Request) {
       shareText: parsed.shareText,
     };
 
+    const { kv } = await import("@vercel/kv");
     await kv.set(`catchcopy:${id}`, result, { ex: 60 * 60 * 24 * 365 });
     await kv.zadd("catchcopy:feed", { score: now, member: id });
 

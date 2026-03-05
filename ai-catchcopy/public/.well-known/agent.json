@@ -1,35 +1,32 @@
 {
-  "name": "AI Catchcopy Generator",
-  "description": "AIが商品・サービスに最適なキャッチコピーを5案自動生成するサービス",
-  "version": "1.0.0",
+  "name": "AIキャッチコピー",
+  "description": "商品・サービス情報を入力するだけで、AIがプロ品質のキャッチコピーを5案同時に生成するWebアプリ",
   "url": "https://ai-catchcopy.ezoai.jp",
-  "provider": {
-    "organization": "Ghostfee",
-    "url": "https://github.com/Michey0495"
-  },
+  "documentation": "https://ai-catchcopy.ezoai.jp/llms.txt",
   "capabilities": {
-    "streaming": false,
-    "pushNotifications": false
-  },
-  "authentication": {
-    "schemes": []
-  },
-  "skills": [
-    {
-      "id": "generate-catchcopy",
-      "name": "キャッチコピー生成",
-      "description": "商品・サービスの情報からAIキャッチコピーを5案生成",
-      "tags": ["copywriting", "marketing", "ai"],
-      "examples": [
-        "「AI Catchcopy Generator」のキャッチコピーを生成して",
-        "カジュアルなトーンでキャッチコピーを作って"
-      ],
-      "inputModes": ["application/json"],
-      "outputModes": ["application/json"]
+    "mcp": {
+      "endpoint": "https://ai-catchcopy.ezoai.jp/api/mcp",
+      "protocolVersion": "2024-11-05"
     }
-  ],
-  "defaultInputModes": ["application/json"],
-  "defaultOutputModes": ["application/json"],
-  "documentationUrl": "https://ai-catchcopy.ezoai.jp/llms.txt",
-  "mcpEndpoint": "https://ai-catchcopy.ezoai.jp/api/mcp"
+  },
+  "mcp": {
+    "endpoint": "https://ai-catchcopy.ezoai.jp/api/mcp",
+    "protocol": "jsonrpc-2.0",
+    "transport": "http-post",
+    "authentication": "none",
+    "tools": [
+      { "name": "generate_catchcopy", "description": "商品情報からキャッチコピーを5案生成する" },
+      { "name": "get_recent_catchcopies", "description": "最近のキャッチコピー一覧を取得する" },
+      { "name": "get_catchcopy_result", "description": "IDでキャッチコピー結果を取得する" }
+    ]
+  },
+  "constraints": {
+    "rateLimits": {
+      "mcp": "10 requests per 10 minutes per IP"
+    }
+  },
+  "provider": {
+    "organization": "ezoai.jp",
+    "url": "https://ezoai.jp"
+  }
 }

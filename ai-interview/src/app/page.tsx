@@ -2,72 +2,9 @@ import Link from "next/link";
 import { InterviewForm } from "@/components/InterviewForm";
 import { RecentInterviews } from "@/components/RecentInterviews";
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-interview.ezoai.jp";
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  name: "AI模擬面接",
-  url: siteUrl,
-  description:
-    "希望職種と自己PRを入力するだけ。AIが厳しい面接官となり、あなたの面接準備度をS~Dランクで判定します。無料・登録不要。",
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
-  offers: { "@type": "Offer", price: "0", priceCurrency: "JPY" },
-  creator: {
-    "@type": "Organization",
-    name: "Ghostfee",
-    url: "https://ezoai.jp",
-  },
-  inLanguage: "ja",
-  isAccessibleForFree: true,
-  featureList:
-    "AI面接官による模擬面接, S~Dランク判定, 職種別カスタマイズ質問, 質問ごとの個別評価, 結果シェア機能",
-};
-
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "AI模擬面接とは何ですか?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "AI模擬面接は、AIが面接官となって模擬面接を行い、あなたの面接力をS~Dランクで判定する無料サービスです。希望職種と自己PRを入力するだけで、本番さながらの面接質問と評価を受けられます。",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "利用料金はかかりますか?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "完全無料です。会員登録も不要で、すぐに利用できます。何度でも繰り返し練習可能です。",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "どのような職種に対応していますか?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "あらゆる職種に対応しています。エンジニア、営業、マーケティング、事務、医療、教育など、入力した職種に合わせてAIが面接質問を生成します。",
-      },
-    },
-  ],
-};
-
 export default function Home() {
   return (
     <div className="min-w-0">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
 
       <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">

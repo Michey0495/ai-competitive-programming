@@ -1,14 +1,27 @@
 {
   "name": "AI Resbattle",
-  "description": "AI-powered restaurant battle arena. Submit two restaurant names and AI evaluates them across multiple categories, scoring and determining a winner with detailed commentary.",
+  "description": "AI-powered restaurant battle arena. Submit two restaurant names and AI evaluates them across 5 categories (taste, cost performance, atmosphere, service, access), scoring and determining a winner.",
   "url": "https://ai-resbattle.ezoai.jp",
   "version": "1.0.0",
+  "provider": "ezoai.jp",
   "capabilities": [
     "restaurant-comparison",
-    "ai-debate",
-    "scoring",
-    "battle-history"
+    "ai-scoring",
+    "battle-generation",
+    "shareable-results"
   ],
+  "mcp": {
+    "endpoint": "https://ai-resbattle.ezoai.jp/api/mcp",
+    "protocol": "jsonrpc-2.0",
+    "transport": "http-post",
+    "authentication": "none",
+    "tools": [
+      {
+        "name": "create_battle",
+        "description": "Compare two restaurants with AI scoring across 5 categories and determine a winner"
+      }
+    ]
+  },
   "api": {
     "base_url": "https://ai-resbattle.ezoai.jp/api",
     "endpoints": [
@@ -19,26 +32,32 @@
         "parameters": {
           "restaurant1": {"type": "string", "required": true, "description": "First restaurant name (max 50 chars)"},
           "restaurant2": {"type": "string", "required": true, "description": "Second restaurant name (max 50 chars)"}
-        },
-        "response": {"id": "string"}
+        }
       },
       {
         "path": "/battle/{id}",
         "method": "GET",
-        "description": "Get battle results by ID",
-        "response": {
-          "id": "string",
-          "restaurant1": "RestaurantResult",
-          "restaurant2": "RestaurantResult",
-          "winner": "restaurant1 | restaurant2 | draw",
-          "summary": "string"
-        }
+        "description": "Get battle results by ID"
+      },
+      {
+        "path": "/recent",
+        "method": "GET",
+        "description": "List recent battles (query: cursor, limit, sort)"
       }
     ]
   },
-  "contact": {
-    "github": "https://github.com/Michey0495/ai-resbattle"
+  "documentation": {
+    "llms_txt": "https://ai-resbattle.ezoai.jp/llms.txt",
+    "about": "https://ai-resbattle.ezoai.jp/about"
   },
-  "languages": ["ja", "en"],
-  "tags": ["ai", "battle", "restaurant", "comparison", "debate"]
+  "contact": {
+    "github": "https://github.com/Michey0495"
+  },
+  "languages": ["ja"],
+  "tags": ["ai", "battle", "restaurant", "comparison", "mcp", "entertainment"],
+  "constraints": {
+    "rate_limit": "5 requests per 60 seconds per IP",
+    "authentication": "none required",
+    "cost": "free"
+  }
 }

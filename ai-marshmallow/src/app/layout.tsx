@@ -79,7 +79,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja">
+    <html lang="ja" className="dark">
       <body className={`${geist.className} min-h-screen flex flex-col`}>
         <script
           type="application/ld+json"
@@ -96,6 +96,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Script>
           </>
         )}
+        <a
+          href="https://ezoai.jp"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block w-full bg-gradient-to-r from-pink-500/10 via-transparent to-pink-500/10 border-b border-white/5 py-1.5 text-center text-xs text-white/50 hover:text-white/70 transition-colors"
+        >
+          ezoai.jp -- 7つのAIサービスを無料で体験
+        </a>
         <Header />
         <main className="flex-1">{children}</main>
         <CrossPromo current="AIマシュマロ" />

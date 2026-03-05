@@ -52,7 +52,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html lang="ja" className="dark">
       <head>
         <script
           type="application/ld+json"
@@ -100,8 +100,16 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistSans.variable} font-sans antialiased`}>
-        <header className="border-b border-white/10">
-          <nav className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
+        <a
+          href="https://ezoai.jp"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block w-full bg-gradient-to-r from-cyan-500/10 via-transparent to-cyan-500/10 border-b border-white/5 py-1.5 text-center text-xs text-white/50 hover:text-white/70 transition-colors"
+        >
+          ezoai.jp -- 7つのAIサービスを無料で体験
+        </a>
+        <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
+          <nav className="max-w-4xl mx-auto px-4 h-12 flex items-center justify-between">
             <Link href="/" className="text-white font-bold text-lg hover:text-cyan-400 transition-colors duration-200">
               AI Catchcopy
             </Link>
@@ -120,7 +128,7 @@ export default function RootLayout({
         </main>
         <footer className="border-t border-white/10 py-6">
           <div className="max-w-4xl mx-auto px-4 text-center text-white/30 text-sm">
-            AI Catchcopy Generator by Ghostfee
+            AI Catchcopy Generator by ezoai.jp
           </div>
         </footer>
         <Toaster

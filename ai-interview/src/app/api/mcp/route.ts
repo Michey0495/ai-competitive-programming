@@ -1,40 +1,66 @@
 import { NextRequest, NextResponse } from "next/server";
-import { kv } from "@vercel/kv";
 import { nanoid } from "nanoid";
+import { callAI, buildInterviewPrompt, sanitizeInput } from "@/lib/ai";
 import type { InterviewResult } from "@/types";
-
-const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:1.5b";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-interview.ezoai.jp";
 
+const RATE_LIMIT = 10;
+const RATE_WINDOW_SEC = 600;
+const memRateMap = new Map<string, { count: number; resetAt: number }>();
+
+async function isRateLimited(ip: string): Promise<boolean> {
+  try {
+    if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
+      const { kv } = await import("@vercel/kv");
+      const key = `ratelimit:interview:mcp:${ip}`;
+      const count = await kv.incr(key);
+      if (count === 1) {
+        await kv.expire(key, RATE_WINDOW_SEC);
+      }
+      return count > RATE_LIMIT;
+    }
+  } catch {
+    // Fall through
+  }
+  const now = Date.now();
+  const entry = memRateMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    memRateMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_SEC * 1000 });
+    return false;
+  }
+  if (entry.count >= RATE_LIMIT) return true;
+  entry.count++;
+  return false;
+}
+
 const TOOL_DEFINITION = {
   name: "mock_interview",
   description:
-    "Conduct an AI mock interview evaluation. Given a candidate's target position and profile, generates interview questions and evaluates their readiness with a rank (S/A/B/C/D).",
+    "AI模擬面接 - 候補者の希望職種とプロフィールから面接質問を生成し、面接準備度をS/A/B/C/Dランクで評価します。",
   inputSchema: {
     type: "object" as const,
     properties: {
       position: {
         type: "string",
-        description: "Target job position (e.g., Frontend Engineer)",
+        description: "希望職種（例: フロントエンドエンジニア）",
       },
       industry: {
         type: "string",
-        description: "Target industry (optional)",
+        description: "志望業界（任意）",
       },
       experience: {
         type: "string",
-        description: "Years of experience (optional)",
+        description: "経験年数（任意）",
       },
       selfpr: {
         type: "string",
-        description: "Self-PR / strengths description (optional)",
+        description: "自己PR（任意）",
       },
       motivation: {
         type: "string",
-        description: "Motivation for applying (optional)",
+        description: "志望動機（任意）",
       },
     },
     required: ["position"],
@@ -43,156 +69,169 @@ const TOOL_DEFINITION = {
 
 export async function GET() {
   return NextResponse.json({
-    name: "AI模擬面接 MCP Server",
-    version: "1.0.0",
+    name: "ai-interview",
+    version: "0.2.0",
+    description:
+      "AI模擬面接 MCP Server - 希望職種とプロフィールからAIが面接質問を生成し、S~Dランクで面接準備度を評価。",
     tools: [TOOL_DEFINITION],
+    endpoints: {
+      mcp: "/api/mcp",
+    },
   });
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-
-    if (body.method === "tools/list") {
+    let body;
+    try {
+      body = await req.json();
+    } catch {
       return NextResponse.json({
         jsonrpc: "2.0",
-        id: body.id,
-        result: { tools: [TOOL_DEFINITION] },
+        id: null,
+        error: { code: -32700, message: "Parse error" },
       });
     }
 
-    if (body.method === "tools/call") {
-      const toolName = body.params?.name;
-      if (toolName !== "mock_interview") {
+    const { method, id: requestId, params } = body;
+
+    switch (method) {
+      case "initialize": {
         return NextResponse.json({
           jsonrpc: "2.0",
-          id: body.id,
-          error: { code: -32601, message: `Tool not found: ${toolName}` },
-        });
-      }
-
-      const args = body.params?.arguments ?? {};
-      if (!args.position) {
-        return NextResponse.json({
-          jsonrpc: "2.0",
-          id: body.id,
-          error: { code: -32602, message: "position is required" },
-        });
-      }
-
-      const prompt = `あなたは大手企業の採用面接官です。厳しくも公正な目で候補者を評価してください。
-
-以下の候補者情報をもとに、模擬面接の評価を行ってください。
-
-【候補者情報】
-- 希望職種: ${args.position}
-${args.industry ? `- 業界: ${args.industry}` : ""}
-${args.experience ? `- 経験年数: ${args.experience}` : ""}
-${args.selfpr ? `- 自己PR: ${args.selfpr}` : ""}
-${args.motivation ? `- 志望動機: ${args.motivation}` : ""}
-
-以下のJSON形式で回答してください。日本語で回答。絵文字は使わないでください。
-
-{
-  "rank": "S, A, B, C, D のいずれか",
-  "verdict": "合格見込み or 要改善 or 厳しい の3段階で1つ",
-  "evaluations": [
-    {"question": "質問1", "evaluation": "評価（2-3文）", "score": "良い or 普通 or 要改善"},
-    {"question": "質問2", "evaluation": "評価（2-3文）", "score": "良い or 普通 or 要改善"},
-    {"question": "質問3", "evaluation": "評価（2-3文）", "score": "良い or 普通 or 要改善"}
-  ],
-  "summary": "総合評価（3-4文）",
-  "advice": "改善アドバイス（3-4文）"
-}
-
-JSONのみを出力してください。`;
-
-      const res = await fetch(`${OLLAMA_URL}/api/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: OLLAMA_MODEL,
-          messages: [{ role: "user", content: prompt }],
-          stream: false,
-          options: { num_ctx: 2048, temperature: 0.7 },
-        }),
-      });
-      if (!res.ok) {
-        return NextResponse.json({
-          jsonrpc: "2.0",
-          id: body.id,
-          error: { code: -32000, message: "AI生成に失敗しました" },
-        });
-      }
-      const data = await res.json();
-      const text = data.message?.content ?? "";
-
-      let parsed;
-      try {
-        parsed = JSON.parse(text);
-      } catch {
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          parsed = JSON.parse(jsonMatch[0]);
-        } else {
-          throw new Error("Failed to parse AI response");
-        }
-      }
-
-      const id = nanoid(10);
-      const result: InterviewResult = {
-        id,
-        input: {
-          position: String(args.position).slice(0, 100),
-          industry: String(args.industry ?? "").slice(0, 100),
-          experience: String(args.experience ?? "").slice(0, 50),
-          selfpr: String(args.selfpr ?? "").slice(0, 500),
-          motivation: String(args.motivation ?? "").slice(0, 500),
-        },
-        rank: parsed.rank ?? "C",
-        verdict: parsed.verdict ?? "要改善",
-        evaluations: parsed.evaluations ?? [],
-        summary: parsed.summary ?? "",
-        advice: parsed.advice ?? "",
-        createdAt: new Date().toISOString(),
-      };
-
-      await kv.set(`interview:${id}`, result, { ex: 60 * 60 * 24 * 365 });
-      await kv.zadd("interview:feed", { score: Date.now(), member: id });
-
-      return NextResponse.json({
-        jsonrpc: "2.0",
-        id: body.id,
-        result: {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(
-                { rank: result.rank, verdict: result.verdict, summary: result.summary, advice: result.advice, evaluations: result.evaluations },
-                null,
-                2
-              ),
-            },
-          ],
-          meta: {
-            resultId: id,
-            resultUrl: `${siteUrl}/result/${id}`,
+          id: requestId ?? null,
+          result: {
+            protocolVersion: "2024-11-05",
+            capabilities: { tools: {} },
+            serverInfo: { name: "ai-interview", version: "0.2.0" },
           },
-        },
-      });
-    }
+        });
+      }
 
-    return NextResponse.json({
-      jsonrpc: "2.0",
-      id: body.id ?? null,
-      error: { code: -32601, message: "Method not found" },
-    });
-  } catch (error) {
-    console.error("MCP error:", error);
-    return NextResponse.json({
-      jsonrpc: "2.0",
-      id: null,
-      error: { code: -32000, message: "Server error" },
-    });
+      case "tools/list": {
+        return NextResponse.json({
+          jsonrpc: "2.0",
+          id: requestId ?? null,
+          result: { tools: [TOOL_DEFINITION] },
+        });
+      }
+
+      case "tools/call": {
+        const ip =
+          req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+        if (await isRateLimited(ip)) {
+          return NextResponse.json({
+            jsonrpc: "2.0",
+            id: requestId ?? null,
+            error: { code: -32000, message: "Rate limit exceeded. Try again later." },
+          });
+        }
+
+        const toolName = params?.name;
+        if (toolName !== "mock_interview") {
+          return NextResponse.json({
+            jsonrpc: "2.0",
+            id: requestId ?? null,
+            error: { code: -32601, message: `Unknown tool: ${toolName}` },
+          });
+        }
+
+        const args = params?.arguments ?? {};
+        if (!args.position) {
+          return NextResponse.json({
+            jsonrpc: "2.0",
+            id: requestId ?? null,
+            error: { code: -32602, message: "Invalid params: position is required" },
+          });
+        }
+
+        const input = {
+          position: sanitizeInput(String(args.position), 100),
+          industry: args.industry ? sanitizeInput(String(args.industry), 100) : undefined,
+          experience: args.experience ? sanitizeInput(String(args.experience), 50) : undefined,
+          selfpr: args.selfpr ? sanitizeInput(String(args.selfpr), 500) : undefined,
+          motivation: args.motivation ? sanitizeInput(String(args.motivation), 500) : undefined,
+        };
+
+        const prompt = buildInterviewPrompt(input);
+        const text = await callAI(prompt);
+
+        let parsed;
+        try {
+          parsed = JSON.parse(text);
+        } catch {
+          const jsonMatch = text.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            parsed = JSON.parse(jsonMatch[0]);
+          } else {
+            throw new Error("Failed to parse AI response");
+          }
+        }
+
+        const id = nanoid(10);
+        const result: InterviewResult = {
+          id,
+          input: {
+            position: input.position,
+            industry: input.industry ?? "",
+            experience: input.experience ?? "",
+            selfpr: input.selfpr ?? "",
+            motivation: input.motivation ?? "",
+          },
+          rank: parsed.rank ?? "C",
+          verdict: parsed.verdict ?? "要改善",
+          evaluations: parsed.evaluations ?? [],
+          summary: parsed.summary ?? "",
+          advice: parsed.advice ?? "",
+          createdAt: new Date().toISOString(),
+        };
+
+        const { kv } = await import("@vercel/kv");
+        await kv.set(`interview:${id}`, result, { ex: 60 * 60 * 24 * 365 });
+        await kv.zadd("interview:feed", { score: Date.now(), member: id });
+
+        return NextResponse.json({
+          jsonrpc: "2.0",
+          id: requestId ?? null,
+          result: {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    rank: result.rank,
+                    verdict: result.verdict,
+                    summary: result.summary,
+                    advice: result.advice,
+                    evaluations: result.evaluations,
+                    resultUrl: `${siteUrl}/result/${id}`,
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          },
+        });
+      }
+
+      default: {
+        return NextResponse.json({
+          jsonrpc: "2.0",
+          id: requestId ?? null,
+          error: { code: -32601, message: `Method not found: ${method}` },
+        });
+      }
+    }
+  } catch (err) {
+    console.error("MCP error:", err);
+    return NextResponse.json(
+      {
+        jsonrpc: "2.0",
+        id: null,
+        error: { code: -32603, message: "Internal error" },
+      },
+      { status: 500 }
+    );
   }
 }

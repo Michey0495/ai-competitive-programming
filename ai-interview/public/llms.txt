@@ -1,73 +1,56 @@
-# AI模擬面接 (AI Mock Interview)
+# AI模擬面接 (ai-interview)
+> 希望職種と自己PRを入力するだけで、AIが面接官となり面接準備度をS~Dランクで判定するWebアプリ
 
-> AI-powered mock interview evaluation service
+## URL
+https://ai-interview.ezoai.jp
 
-## Overview
-AI模擬面接は、希望職種と自己PRを入力するだけで、AIが厳しい面接官として面接力を判定するサービスです。
-S~Dランクの5段階で面接準備度を評価し、具体的な改善アドバイスを提供します。
+## 概要
+AI模擬面接は、候補者の希望職種・業界・経験年数・自己PR・志望動機をもとに、AIが面接質問を生成し、面接準備度をS/A/B/C/Dの5段階で評価するサービスです。
+各質問に対する個別評価と総合アドバイスを提供します。結果はSNSでシェア可能です。
 
-## Features
-- 希望職種に基づくリアルな面接質問の生成
-- 各質問エリアごとの評価とスコア
-- S/A/B/C/D の5段階ランク判定
-- 合格見込み/要改善/厳しい の3段階判定
-- 具体的な改善アドバイス
-- 結果のシェア機能（X/リンクコピー）
+## MCP (Model Context Protocol)
 
-## Tech Stack
-- Next.js 15 (App Router)
-- TypeScript (strict)
-- Tailwind CSS
-- Claude Haiku (AI engine)
-- Vercel KV (data storage)
+### Endpoint
+POST https://ai-interview.ezoai.jp/api/mcp
 
-## API
-### POST /api/interview
-Generate mock interview evaluation.
+### Protocol
+JSON-RPC 2.0 over HTTP POST (Content-Type: application/json)
 
-Request:
+### Authentication
+不要（レート制限あり: 10リクエスト/10分）
+
+### 使用フロー
+
+Step 1: Initialize
 ```json
-{
-  "position": "フロントエンドエンジニア",
-  "industry": "IT・Web",
-  "experience": "3年",
-  "selfpr": "React/TypeScriptの経験が豊富",
-  "motivation": "技術力を活かしてプロダクト開発に貢献したい"
-}
+{"jsonrpc":"2.0","id":"1","method":"initialize","params":{}}
 ```
 
-Response:
+Step 2: List Tools
 ```json
-{
-  "id": "abc123"
-}
+{"jsonrpc":"2.0","id":"2","method":"tools/list","params":{}}
 ```
 
-Result available at: /result/{id}
+Step 3: Call Tool
+```json
+{"jsonrpc":"2.0","id":"3","method":"tools/call","params":{"name":"mock_interview","arguments":{"position":"フロントエンドエンジニア","industry":"IT・Web","experience":"3年","selfpr":"React/TypeScriptの経験が豊富","motivation":"技術力を活かしてプロダクト開発に貢献したい"}}}
+```
 
-## MCP Server
-Endpoint: /api/mcp
-Protocol: JSON-RPC 2.0
+### Tools
 
-### Tool: mock_interview
-Conduct AI mock interview evaluation.
+#### mock_interview
+候補者の希望職種とプロフィールから面接質問を生成し、面接準備度をS/A/B/C/Dランクで評価する。
+- position (string, required): 希望職種
+- industry (string, optional): 志望業界
+- experience (string, optional): 経験年数
+- selfpr (string, optional): 自己PR
+- motivation (string, optional): 志望動機
+- 戻り値: ランク、判定、質問ごとの評価、総合評価、アドバイス、結果URL
 
-Parameters:
-- position (string, required): Target job position
-- industry (string, optional): Target industry
-- experience (string, optional): Years of experience
-- selfpr (string, optional): Self-PR / strengths
-- motivation (string, optional): Motivation for applying
+### 制約
+- mock_interview: レート制限 10回/10分
+- ランク: S/A/B/C/D の5段階
+- 判定: 合格見込み/要改善/厳しい の3段階
 
-## Pages
-- / - Home page with interview form
-- /result/{id} - Interview result with OGP
-
-## Links
-- Website: https://ai-interview.ezoai.jp
-- Agent Card: https://ai-interview.ezoai.jp/.well-known/agent.json
-- MCP Endpoint: https://ai-interview.ezoai.jp/api/mcp
-- GitHub: https://github.com/Michey0495/ai-interview
-
-## Contact
-Ghostfee - https://github.com/Michey0495
+## Provider
+ezoai.jp - AIエージェント向けサービスプラットフォーム

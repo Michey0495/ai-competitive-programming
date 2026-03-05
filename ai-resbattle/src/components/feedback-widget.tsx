@@ -2,10 +2,6 @@
 
 import { useState } from "react";
 
-/**
- * フィードバックウィジェット - 全アプリに埋め込む
- * ユーザーからのフィードバックを GitHub Issues に自動投稿
- */
 export function FeedbackWidget({ repoName }: { repoName: string }) {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<"bug" | "feature" | "other">("bug");
@@ -35,7 +31,7 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors text-sm z-50"
+        className="fixed bottom-4 right-4 bg-white/5 border border-white/10 text-white/50 px-4 py-2 rounded-full shadow-lg hover:bg-white/10 hover:text-white/70 transition-all duration-200 text-sm z-50 cursor-pointer"
       >
         フィードバック
       </button>
@@ -43,13 +39,13 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 w-80 bg-background border border-border rounded-xl shadow-2xl p-4 z-50">
+    <div className="fixed bottom-4 right-4 w-80 bg-black border border-white/10 rounded-xl shadow-2xl p-4 z-50">
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-bold text-foreground">フィードバック</h3>
-        <button onClick={() => setOpen(false)} className="text-muted-foreground hover:text-foreground">&times;</button>
+        <h3 className="font-bold text-white">フィードバック</h3>
+        <button onClick={() => setOpen(false)} className="text-white/40 hover:text-white cursor-pointer">&times;</button>
       </div>
       {sent ? (
-        <p className="text-green-600 text-center py-4">送信しました！ありがとうございます</p>
+        <p className="text-green-400 text-center py-4">送信しました</p>
       ) : (
         <>
           <div className="flex gap-2 mb-3">
@@ -57,8 +53,8 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
               <button
                 key={t}
                 onClick={() => setType(t)}
-                className={`px-3 py-1 rounded-full text-xs ${
-                  type === t ? "bg-blue-600 text-white" : "bg-muted text-muted-foreground"
+                className={`px-3 py-1 rounded-full text-xs cursor-pointer transition-all duration-200 ${
+                  type === t ? "bg-white/10 text-white" : "bg-white/5 text-white/40 hover:text-white/60"
                 }`}
               >
                 {t === "bug" ? "不具合" : t === "feature" ? "要望" : "その他"}
@@ -69,11 +65,11 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="ご意見をお聞かせください..."
-            className="w-full border border-border bg-background text-foreground rounded-lg p-2 text-sm h-24 resize-none mb-3"
+            className="w-full border border-white/10 bg-white/5 text-white rounded-lg p-2 text-sm h-24 resize-none mb-3 placeholder:text-white/20 focus:outline-none focus:border-white/20"
           />
           <button
             onClick={submit}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700"
+            className="w-full bg-white/10 text-white py-2 rounded-lg text-sm hover:bg-white/15 transition-all duration-200 cursor-pointer"
           >
             送信
           </button>

@@ -1,16 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 
 interface ShareButtonsProps {
   restaurant1: string;
   restaurant2: string;
   winner: string;
+  score1: number;
+  score2: number;
   url: string;
 }
 
-export function ShareButtons({ restaurant1, restaurant2, winner, url }: ShareButtonsProps) {
+export function ShareButtons({ restaurant1, restaurant2, winner, score1, score2, url }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
 
   const winnerName =
@@ -20,7 +21,7 @@ export function ShareButtons({ restaurant1, restaurant2, winner, url }: ShareBut
       ? restaurant2
       : "引き分け";
 
-  const text = `【AIレスバトル】${restaurant1} vs ${restaurant2}の勝者は「${winnerName}」！\n#AIレスバトル`;
+  const text = `${restaurant1}(${score1}点) vs ${restaurant2}(${score2}点)\n\nAI判定の勝者は「${winnerName}」\n\n#AIレスバトル`;
 
   function shareX() {
     window.open(
@@ -43,16 +44,31 @@ export function ShareButtons({ restaurant1, restaurant2, winner, url }: ShareBut
   }
 
   return (
-    <div className="flex flex-wrap gap-2 justify-center">
-      <Button variant="outline" size="sm" onClick={shareX}>
-        𝕏 でシェア
-      </Button>
-      <Button variant="outline" size="sm" onClick={shareLine}>
-        LINE でシェア
-      </Button>
-      <Button variant="outline" size="sm" onClick={copyLink} disabled={copied}>
-        {copied ? "コピーしました" : "リンクをコピー"}
-      </Button>
+    <div className="bg-white/[0.02] border border-white/10 rounded-xl p-5">
+      <p className="text-xs font-mono text-white/30 tracking-[0.2em] uppercase mb-4 text-center">
+        Share Result
+      </p>
+      <div className="grid grid-cols-3 gap-3">
+        <button
+          onClick={shareX}
+          className="bg-white/5 border border-white/10 rounded-lg py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
+        >
+          X でシェア
+        </button>
+        <button
+          onClick={shareLine}
+          className="bg-white/5 border border-white/10 rounded-lg py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer"
+        >
+          LINE でシェア
+        </button>
+        <button
+          onClick={copyLink}
+          disabled={copied}
+          className="bg-white/5 border border-white/10 rounded-lg py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer disabled:text-white/30"
+        >
+          {copied ? "コピー済み" : "リンクをコピー"}
+        </button>
+      </div>
     </div>
   );
 }

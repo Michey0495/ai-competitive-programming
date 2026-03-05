@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import Script from "next/script";
 import { Nav } from "@/components/nav";
 import { FeedbackWidget } from "@/components/feedback-widget";
+import CrossPromo from "@/components/CrossPromo";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"] });
@@ -41,21 +42,12 @@ export const metadata: Metadata = {
     title: "AIレスバトル - 2つのレストランをAIがバトル形式で比較",
     description:
       "2つのレストランをAIが5項目で徹底比較！バトル形式で勝者を判定します。登録不要・完全無料。",
-    images: [
-      {
-        url: `${baseUrl}/og-image.png`,
-        width: 1200,
-        height: 630,
-        alt: "AIレスバトル - AIがレストランを比較・判定",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "AIレスバトル - 2つのレストランをAIが比較",
     description:
       "2つのレストランをAIが5項目で徹底比較！バトル形式で勝者を判定します。",
-    images: [`${baseUrl}/og-image.png`],
   },
   robots: {
     index: true,
@@ -77,7 +69,7 @@ const jsonLd = {
   url: baseUrl,
   description:
     "2つのレストランをAIが味・コスパ・雰囲気・サービス・アクセスの5項目で徹底比較し、バトル形式で勝者を判定するWebアプリ。",
-  applicationCategory: "UtilitiesApplication",
+  applicationCategory: "EntertainmentApplication",
   operatingSystem: "Web",
   offers: {
     "@type": "Offer",
@@ -95,7 +87,7 @@ export default function RootLayout({
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
-    <html lang="ja">
+    <html lang="ja" className="dark">
       <head>
         <script
           type="application/ld+json"
@@ -118,10 +110,19 @@ export default function RootLayout({
           </>
         )}
       </head>
-      <body className={`${geist.className} antialiased min-h-screen bg-background`}>
+      <body className={`${geist.className} antialiased min-h-screen bg-black text-white`}>
+        <a
+          href="https://ezoai.jp"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block w-full bg-gradient-to-r from-red-500/10 via-transparent to-red-500/10 border-b border-white/5 py-1.5 text-center text-xs text-white/50 hover:text-white/70 transition-colors"
+        >
+          ezoai.jp -- 7つのAIサービスを無料で体験
+        </a>
         <Nav />
-        <main className="max-w-4xl mx-auto px-4 py-8">{children}</main>
-        <footer className="border-t mt-16 py-8 text-center text-sm text-muted-foreground">
+        <main>{children}</main>
+        <CrossPromo current="AIレスバトル" />
+        <footer className="border-t border-white/5 py-8 text-center text-sm text-white/30">
           <p>© 2026 AIレスバトル</p>
         </footer>
         <FeedbackWidget repoName="ai-resbattle" />

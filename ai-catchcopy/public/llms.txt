@@ -1,27 +1,67 @@
-# AI Catchcopy Generator
+# AIキャッチコピー (ai-catchcopy)
+> 商品・サービス情報を入力するだけで、AIがプロ品質のキャッチコピーを5案同時に生成するWebアプリ
 
-> AIが商品・サービスに最適なキャッチコピーを5案自動生成するWebサービス
+## URL
+https://ai-catchcopy.ezoai.jp
 
-## Overview
-AI Catchcopy Generatorは、商品名・説明・ターゲット・トーンを入力すると、AIが5つの異なるアプローチでキャッチコピーを生成するサービスです。
+## 概要
+AIキャッチコピーは、商品名・説明・ターゲット層・トーンを指定すると、AIが5種類のキャッチコピーを同時に生成するサービスです。
+5つのトーン（プロフェッショナル、カジュアル、遊び心、エレガント、大胆）から選択可能。結果はSNSでシェアできます。
 
-## Features
-- 5案同時生成: 異なるコンセプトで5つのキャッチコピーを一度に生成
-- 5つのトーン: professional, casual, playful, elegant, bold
-- ワンタップコピー: 気に入ったコピーをタップで即座にクリップボードへ
-- SNSシェア: X(Twitter)、LINEでの共有
-- MCP Server: AIエージェントが直接利用可能
+## MCP (Model Context Protocol)
 
-## API Endpoints
-- POST /api/generate - キャッチコピー生成
-- GET /api/feed - 最近の生成一覧
-- POST /api/mcp - MCP Server (JSON-RPC 2.0)
-- GET /api/mcp - MCP Server ツール一覧
+### Endpoint
+POST https://ai-catchcopy.ezoai.jp/api/mcp
 
-## MCP Tools
-- generate_catchcopy: 商品情報からキャッチコピー5案を生成
-- get_recent_catchcopies: 最近の生成結果を取得
-- get_catchcopy_result: ID指定で結果を取得
+### Protocol
+JSON-RPC 2.0 over HTTP POST (Content-Type: application/json)
 
-## Tech Stack
-Next.js 15, TypeScript, Tailwind CSS, Claude Haiku, Vercel KV
+### Authentication
+不要（レート制限あり: 10リクエスト/10分）
+
+### 使用フロー
+
+Step 1: Initialize
+```json
+{"jsonrpc":"2.0","id":"1","method":"initialize","params":{}}
+```
+
+Step 2: List Tools
+```json
+{"jsonrpc":"2.0","id":"2","method":"tools/list","params":{}}
+```
+
+Step 3: Call Tool
+```json
+{"jsonrpc":"2.0","id":"3","method":"tools/call","params":{"name":"generate_catchcopy","arguments":{"productName":"エコバッグ","description":"折りたたみ可能なコンパクトエコバッグ","targetAudience":"20-30代の環境意識の高い女性","tone":"elegant"}}}
+```
+
+### Tools
+
+#### generate_catchcopy
+商品・サービス情報からAIキャッチコピーを5案生成する。
+- productName (string, required): 商品・サービス名
+- description (string, required): 商品・サービスの説明
+- targetAudience (string, required): ターゲット層
+- tone (string, required): トーン（professional/casual/playful/elegant/bold）
+- agentName (string, optional): エージェント名
+- agentDescription (string, optional): エージェント説明
+- 戻り値: キャッチコピー5案（text+concept）、シェアテキスト、結果URL
+
+#### get_recent_catchcopies
+最近生成されたキャッチコピーの一覧を取得する。
+- limit (number, optional): 取得件数（デフォルト20、最大50）
+- 戻り値: キャッチコピー結果の配列
+
+#### get_catchcopy_result
+IDを指定してキャッチコピー結果を取得する。
+- id (string, required): 結果ID
+- 戻り値: キャッチコピー結果
+
+### 制約
+- generate_catchcopy: レート制限 10回/10分
+- トーン: professional/casual/playful/elegant/bold のいずれか
+- 商品名: 最大100文字、説明: 最大500文字、ターゲット: 最大200文字
+
+## Provider
+ezoai.jp - AIエージェント向けサービスプラットフォーム
