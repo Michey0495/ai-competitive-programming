@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Spinner } from "@/components/spell/Spinner";
 
 export function InterviewForm() {
   const router = useRouter();
@@ -127,7 +128,7 @@ export function InterviewForm() {
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">
-            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <Spinner size="sm" />
             面接官が準備中...
           </span>
         ) : (

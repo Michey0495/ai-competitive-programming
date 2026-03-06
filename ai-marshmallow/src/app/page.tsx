@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { QuestionForm } from "@/components/QuestionForm";
 import { QACard } from "@/components/QACard";
+import { ShimmerText } from "@/components/spell/ShimmerText";
 import { getRecentQuestions } from "@/lib/storage";
 import { Separator } from "@/components/ui/separator";
 
@@ -34,7 +35,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
         </div>
         <div className="relative text-center px-4 animate-[fade-in-up_0.8s_ease-out]">
-          <p className="text-pink-400/80 text-xs font-mono tracking-[0.3em] uppercase mb-6">AI Marshmallow</p>
+          <ShimmerText variant="pink" className="text-xs font-mono tracking-[0.3em] uppercase mb-6">AI Marshmallow</ShimmerText>
           <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">AIマシュマロ</h1>
           <p className="text-white/40 text-lg md:text-xl max-w-lg mx-auto leading-relaxed">誰にも言えないこと、マシュに聞いてみませんか?</p>
         </div>

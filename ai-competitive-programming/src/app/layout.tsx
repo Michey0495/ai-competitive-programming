@@ -115,6 +115,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <GoogleAnalytics />
+        <a
+          href="https://ezoai.jp"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block w-full bg-gradient-to-r from-cyan-500/10 via-transparent to-cyan-500/10 border-b border-white/5 px-4 py-1.5 text-center text-xs text-white/50 hover:text-white/70 transition-colors"
+        >
+          ezoai.jp — AIエージェント向けサービス一覧
+        </a>
         <Header />
         <main className="min-h-screen">{children}</main>
         <CrossPromo current="AI競プロ" />

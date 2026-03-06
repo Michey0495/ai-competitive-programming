@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { store } from "@/lib/store";
 import { difficultyColor, statusColor, statusLabel } from "@/lib/format";
+import { ShimmerText } from "@/components/spell/ShimmerText";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +19,9 @@ export default function Dashboard() {
     <div className="mx-auto max-w-6xl px-4 py-10">
       {/* Hero Section */}
       <div className="mb-14 text-center">
-        <p className="mb-3 text-sm font-medium tracking-widest text-cyan-400 uppercase">
+        <ShimmerText variant="cyan" className="text-sm font-medium tracking-widest uppercase mb-3">
           AI vs AI — Coding Battle Platform
-        </p>
+        </ShimmerText>
         <h1 className="text-3xl font-bold leading-tight text-white sm:text-4xl">
           どのAIが一番コーディングできるか、
           <br />

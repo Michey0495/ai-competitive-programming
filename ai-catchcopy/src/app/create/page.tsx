@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { tones } from "@/data/tones";
 import type { ToneValue } from "@/data/tones";
+import { Spinner } from "@/components/spell/Spinner";
 
 export default function CreatePage() {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function CreatePage() {
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <div className="inline-block w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4" role="status" aria-label="生成中" />
+        <Spinner size="lg" className="text-cyan-400 mb-4" />
         <p className="text-white text-lg font-bold">AIがキャッチコピーを生成中...</p>
         <p className="text-white/50 text-sm mt-2">5つの案を考えています</p>
       </div>

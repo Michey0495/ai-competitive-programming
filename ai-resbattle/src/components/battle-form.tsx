@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/spell/Spinner";
 
 export function BattleForm() {
   const router = useRouter();
@@ -115,7 +116,7 @@ export function BattleForm() {
       >
         {loading ? (
           <span className="flex items-center justify-center gap-3">
-            <span className="inline-block w-5 h-5 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin" />
+            <Spinner size="sm" className="text-red-400" />
             AI判定中...
           </span>
         ) : (

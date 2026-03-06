@@ -133,7 +133,7 @@ export default function RootLayout({
             style: { background: "#18181b", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" },
           }}
         />
-        <FeedbackWidget />
+        <FeedbackWidget repoName="ai-interview" />
       </body>
     </html>
   );

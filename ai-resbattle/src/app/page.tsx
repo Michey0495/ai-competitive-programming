@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BattleForm } from "@/components/battle-form";
+import { ShimmerText } from "@/components/spell/ShimmerText";
 import { getRecentBattleIds, getBattle } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -23,9 +24,9 @@ export default async function Home() {
         </div>
 
         <div className="relative text-center px-4 animate-[fade-in-up_0.8s_ease-out]">
-          <p className="text-red-400/80 text-xs font-mono tracking-[0.3em] uppercase mb-6">
+          <ShimmerText variant="red" className="text-xs font-mono tracking-[0.3em] uppercase mb-6">
             AI Restaurant Battle
-          </p>
+          </ShimmerText>
           <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">
             AIレスバトル
           </h1>

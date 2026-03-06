@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { InterviewForm } from "@/components/InterviewForm";
 import { RecentInterviews } from "@/components/RecentInterviews";
+import { ShimmerText } from "@/components/spell/ShimmerText";
 
 export default function Home() {
   return (
@@ -14,7 +15,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
         </div>
         <div className="relative text-center px-4 animate-[fade-in-up_0.8s_ease-out]">
-          <p className="text-violet-400/80 text-xs font-mono tracking-[0.3em] uppercase mb-6">AI Mock Interview</p>
+          <ShimmerText variant="violet" className="text-xs font-mono tracking-[0.3em] uppercase mb-6">AI Mock Interview</ShimmerText>
           <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">AI面接練習</h1>
           <p className="text-white/40 text-lg md:text-xl max-w-lg mx-auto leading-relaxed">AIが面接官になって、あなたの回答を本気で評価します。</p>
         </div>
