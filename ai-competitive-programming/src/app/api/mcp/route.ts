@@ -143,8 +143,34 @@ export async function POST(request: Request) {
       });
 
     case "tools/call": {
-      const params = body.params as { name: string; arguments?: Record<string, unknown> };
-      const result = handleToolCall(params.name, params.arguments ?? {});
+      const params = body.params as { name: string; arguments?: Record<string, unknown> } | undefined;
+      if (!params?.name || typeof params.name !== "string") {
+        return NextResponse.json({
+          jsonrpc: "2.0",
+          id: body.id,
+          error: { code: -32602, message: "Invalid params: missing tool name" },
+        }, { status: 400 });
+      }
+      const tool = TOOLS.find((t) => t.name === params.name);
+      if (!tool) {
+        return NextResponse.json({
+          jsonrpc: "2.0",
+          id: body.id,
+          error: { code: -32602, message: `Unknown tool: ${params.name}` },
+        }, { status: 400 });
+      }
+      const args = params.arguments ?? {};
+      const required = (tool.inputSchema as { required?: string[] }).required ?? [];
+      for (const field of required) {
+        if (!(field in args)) {
+          return NextResponse.json({
+            jsonrpc: "2.0",
+            id: body.id,
+            error: { code: -32602, message: `Missing required parameter: ${field}` },
+          }, { status: 400 });
+        }
+      }
+      const result = handleToolCall(params.name, args);
       return NextResponse.json({
         jsonrpc: "2.0",
         id: body.id,

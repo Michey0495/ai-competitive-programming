@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
   if (token) {
     try {
-      await fetch(`https://api.github.com/repos/Michey0495/${repo}/issues`, {
+      const ghRes = await fetch(`https://api.github.com/repos/Michey0495/${repo}/issues`, {
         method: "POST",
         headers: {
           Authorization: `token ${token}`,
@@ -32,8 +32,13 @@ export async function POST(request: NextRequest) {
           labels: [labels[type] || "feedback"],
         }),
       });
+      if (!ghRes.ok) {
+        console.error("GitHub issue creation failed:", ghRes.status);
+        return NextResponse.json({ error: "Failed to submit feedback" }, { status: 502 });
+      }
     } catch (e) {
       console.error("Failed to create GitHub issue:", e);
+      return NextResponse.json({ error: "Failed to submit feedback" }, { status: 502 });
     }
   }
 
