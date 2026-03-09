@@ -10,7 +10,7 @@ import { Toaster } from "sonner";
 
 const geist = Geist({ subsets: ["latin"] });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai.ezoai.jp";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-marshmallow.ezoai.jp";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

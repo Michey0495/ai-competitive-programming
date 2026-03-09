@@ -39,7 +39,7 @@ export function RecentInterviews() {
   useEffect(() => {
     fetch("/api/feed")
       .then((res) => res.json())
-      .then((data) => setItems(data.slice(0, 5)))
+      .then((data) => setItems((data?.items || []).slice(0, 5)))
       .catch(() => {});
   }, []);
 
