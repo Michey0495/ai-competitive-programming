@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-03-12 (3rd pass)
+
+### Maintenance
+- Health check: build OK, 0 vulnerabilities, 0 TypeScript errors, 0 open issues
+- AI public files (robots.txt, llms.txt, agent.json) verified present and correct
+- Updated react 19.2.3→19.2.4, react-dom 19.2.3→19.2.4 (patch updates)
+
 ## 2026-03-12 (2nd pass)
 
 ### Maintenance
