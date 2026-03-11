@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-03-12 (4th pass)
+
+### Maintenance
+- Health check: build OK, lint OK, 0 vulnerabilities, 0 TypeScript errors, 0 open issues
+- AI public files (robots.txt, llms.txt, agent.json) verified present and correct
+- All dependencies at latest patch/minor versions — no updates needed
+- Full source code review: no security issues, no dead code, no TODOs
+- **DNS Issue Detected**: `ai-url.ezoai.jp` A record points to Xserver (162.43.104.27) instead of Vercel (76.76.21.21) — SSL cert mismatch. Requires manual DNS fix on Xserver panel.
+
 ## 2026-03-12 (3rd pass)
 
 ### Maintenance
