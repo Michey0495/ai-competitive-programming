@@ -1,18 +1,19 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center gap-4 py-20 text-center max-w-4xl mx-auto px-4">
+    <div className="flex flex-col items-center gap-4 py-20 text-center">
+      <p className="text-4xl font-bold text-white/40">404</p>
       <h2 className="text-2xl font-bold text-white">ページが見つかりません</h2>
-      <p className="text-white/40">
+      <p className="text-white/60">
         お探しのバトルは存在しないか、期限切れです。
       </p>
-      <Link
-        href="/"
-        className="mt-4 bg-gradient-to-r from-red-600 to-red-500 text-white font-bold px-6 py-3 rounded-lg hover:from-red-500 hover:to-red-400 transition-all duration-300"
-      >
-        新しいバトルを始める
-      </Link>
+      <Button asChild className="bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200">
+        <Link href="/">
+          ホームに戻る
+        </Link>
+      </Button>
     </div>
   );
 }

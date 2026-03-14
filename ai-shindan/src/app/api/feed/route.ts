@@ -1,48 +1,40 @@
-import { NextRequest, NextResponse } from "next/server";
-import type { DiagnosisResult } from "@/types";
+import { NextResponse } from "next/server";
+import type { AnalysisResult, FeedItem } from "@/types";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     if (!process.env.KV_REST_API_URL) {
-      return NextResponse.json({ items: [], nextCursor: null });
+      return NextResponse.json([]);
     }
-    const { kv } = await import("@vercel/kv");
-    const { searchParams } = request.nextUrl;
-    const cursor = parseInt(searchParams.get("cursor") || "0", 10);
-    const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), 50);
-    const sort = searchParams.get("sort") || "new";
 
-    const feedKey = sort === "popular" ? "shindan:popular" : "results:feed";
-    const ids = await kv.zrange(feedKey, cursor, cursor + limit, { rev: true });
+    const { kv } = await import("@vercel/kv");
+    const ids = await kv.zrange("results:feed", 0, 19, { rev: true });
 
     if (!ids || ids.length === 0) {
-      return NextResponse.json({ items: [], nextCursor: null });
+      return NextResponse.json([]);
     }
 
-    const likeKeys = ids.map((id) => `likes:shindan:${id}`);
-    const likeCounts = await kv.mget<(number | null)[]>(...likeKeys);
-
-    const items = [];
-    for (let i = 0; i < ids.length; i++) {
-      const result = await kv.get<DiagnosisResult>(`result:${ids[i]}`);
+    const items: FeedItem[] = [];
+    for (const id of ids) {
+      const result = await kv.get<AnalysisResult>(`result:${id}`);
       if (result) {
         items.push({
           id: result.id,
           personalityType: result.personalityType,
+          title: result.title,
+          name: result.name,
           agentName: result.agentName,
           traits: result.traits,
+          stats: result.stats,
           colorScheme: result.colorScheme,
           createdAt: result.createdAt,
-          likes: likeCounts[i] ?? 0,
         });
       }
     }
 
-    const nextCursor = ids.length === limit + 1 ? cursor + limit : null;
-
-    return NextResponse.json({ items, nextCursor });
+    return NextResponse.json(items);
   } catch (err) {
     console.error("Feed error:", err);
-    return NextResponse.json({ items: [], nextCursor: null });
+    return NextResponse.json([]);
   }
 }

@@ -1,28 +1,31 @@
 import { ImageResponse } from "next/og";
-import { kv } from "@vercel/kv";
-import type { DiagnosisResult } from "@/types";
+import { getResult } from "@/lib/analysis";
 
 export const runtime = "edge";
-export const alt = "AI性格診断の結果";
+export const alt = "AI自己分析 結果カード";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const colorMap: Record<string, string> = {
-  red: "#ef4444",
-  blue: "#3b82f6",
-  green: "#22c55e",
-  purple: "#a855f7",
-  yellow: "#eab308",
-  pink: "#ec4899",
+const accentColors: Record<string, string> = {
+  cool: "#38bdf8",
+  cute: "#f472b6",
+  dark: "#a78bfa",
+  creative: "#fbbf24",
+  red: "#f87171",
+  blue: "#60a5fa",
+  green: "#34d399",
+  purple: "#a78bfa",
+  yellow: "#fbbf24",
+  pink: "#f472b6",
 };
 
-export default async function OGImage({
+export default async function Image({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const result = await kv.get<DiagnosisResult>(`result:${id}`);
+  const result = await getResult(id);
 
   if (!result) {
     return new ImageResponse(
@@ -40,14 +43,14 @@ export default async function OGImage({
             fontWeight: 900,
           }}
         >
-          AI性格診断
+          AI自己分析
         </div>
       ),
-      { ...size }
+      { width: 1200, height: 630 }
     );
   }
 
-  const accent = colorMap[result.colorScheme] ?? "#a855f7";
+  const accent = accentColors[result.style ?? result.colorScheme] ?? "#a78bfa";
 
   return new ImageResponse(
     (
@@ -56,14 +59,12 @@ export default async function OGImage({
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
           background: "#000",
           color: "#fff",
-          padding: 60,
           position: "relative",
         }}
       >
-        {/* Accent line top */}
+        {/* Top accent line */}
         <div
           style={{
             position: "absolute",
@@ -75,93 +76,170 @@ export default async function OGImage({
           }}
         />
 
-        {/* Header */}
+        {/* Left: Text info */}
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 40,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ color: accent, fontSize: 32, fontWeight: 900 }}>
-              {"//"}
-            </span>
-            <span style={{ fontSize: 24, fontWeight: 700 }}>AI性格診断</span>
-          </div>
-          <span style={{ fontSize: 18, color: "rgba(255,255,255,0.4)" }}>
-            ai-shindan.ezoai.jp
-          </span>
-        </div>
-
-        {/* Center: personality type */}
-        <div
-          style={{
-            display: "flex",
-            flex: 1,
             flexDirection: "column",
             justifyContent: "center",
-            gap: 20,
+            padding: "48px 48px 48px 56px",
+            flex: 1,
           }}
         >
-          <div style={{ fontSize: 18, color: "rgba(255,255,255,0.5)" }}>
-            あなたの性格タイプ
-          </div>
-          <div style={{ fontSize: 64, fontWeight: 900, color: accent }}>
-            {result.personalityType.slice(0, 20)}
-          </div>
           <div
             style={{
-              fontSize: 20,
-              color: "rgba(255,255,255,0.6)",
-              lineHeight: 1.6,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              marginBottom: 24,
             }}
           >
-            {result.description.slice(0, 80)}
+            <span style={{ color: accent, fontSize: 22, fontWeight: 900 }}>
+              {"//"}
+            </span>
+            <span style={{ fontSize: 16, fontWeight: 700, color: "#fff" }}>
+              AI自己分析
+            </span>
+          </div>
+
+          <div
+            style={{
+              fontSize: 13,
+              color: accent,
+              fontWeight: 700,
+              letterSpacing: 2,
+              marginBottom: 8,
+            }}
+          >
+            {result.personalityType}
+          </div>
+
+          {result.name && (
+            <div
+              style={{
+                fontSize: 36,
+                fontWeight: 900,
+                color: "#fff",
+                marginBottom: 4,
+              }}
+            >
+              {result.name.slice(0, 12)}
+            </div>
+          )}
+
+          <div
+            style={{
+              fontSize: 28,
+              fontWeight: 700,
+              color: accent,
+              marginBottom: 12,
+            }}
+          >
+            {result.title?.slice(0, 20) || ""}
+          </div>
+
+          <div
+            style={{
+              fontSize: 14,
+              color: "rgba(255,255,255,0.5)",
+              marginBottom: 24,
+            }}
+          >
+            {result.catchcopy?.slice(0, 50) || ""}
+          </div>
+
+          {/* Traits */}
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {(result.traits || []).slice(0, 4).map((trait, i) => (
+              <div
+                key={i}
+                style={{
+                  fontSize: 12,
+                  color: accent,
+                  background: `${accent}18`,
+                  padding: "4px 12px",
+                  borderRadius: 999,
+                }}
+              >
+                {trait}
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Bottom: trait tags */}
+        {/* Right: Stats */}
         <div
           style={{
             display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
             gap: 12,
-            borderTop: "1px solid rgba(255,255,255,0.1)",
-            paddingTop: 24,
-            flexWrap: "wrap",
+            padding: "48px 56px 48px 0",
+            width: 400,
           }}
         >
-          {result.traits.slice(0, 5).map((trait, i) => (
+          {(result.stats || []).slice(0, 5).map((stat, i) => (
             <div
               key={i}
-              style={{
-                fontSize: 16,
-                color: accent,
-                padding: "6px 16px",
-                border: `1px solid ${accent}40`,
-                borderRadius: 999,
-              }}
+              style={{ display: "flex", alignItems: "center", gap: 12 }}
             >
-              {trait}
+              <div
+                style={{
+                  fontSize: 13,
+                  color: "rgba(255,255,255,0.5)",
+                  width: 72,
+                }}
+              >
+                {stat.label.slice(0, 6)}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flex: 1,
+                  height: 12,
+                  background: "rgba(255,255,255,0.1)",
+                  borderRadius: 6,
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    width: `${stat.value}%`,
+                    height: "100%",
+                    background: accent,
+                    borderRadius: 6,
+                  }}
+                />
+              </div>
+              <div
+                style={{
+                  fontSize: 13,
+                  color: accent,
+                  fontWeight: 700,
+                  width: 28,
+                  textAlign: "right",
+                }}
+              >
+                {stat.value}
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Bottom right: ezoai.jp */}
+        {/* Bottom URL */}
         <div
           style={{
             position: "absolute",
-            bottom: 24,
-            right: 60,
-            fontSize: 14,
-            color: "rgba(255,255,255,0.3)",
+            bottom: 20,
+            right: 56,
+            fontSize: 12,
+            color: "rgba(255,255,255,0.2)",
           }}
         >
-          ezoai.jp
+          ai-shindan.ezoai.jp
         </div>
       </div>
     ),
-    { ...size }
+    { width: 1200, height: 630 }
   );
 }

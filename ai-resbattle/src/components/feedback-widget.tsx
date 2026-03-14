@@ -31,11 +31,23 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
     }
   };
 
+  const typeLabels = {
+    bug: "不具合",
+    feature: "要望",
+    other: "その他",
+  };
+
+  const typeDots = {
+    bug: "bg-red-400",
+    feature: "bg-blue-400",
+    other: "bg-white/40",
+  };
+
   if (!open) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-4 right-4 bg-white/10 text-white/70 px-4 py-2 rounded-full border border-white/10 hover:bg-white/20 hover:text-white transition-all duration-200 text-sm z-50 backdrop-blur-sm"
+        className="fixed bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-200 text-sm z-50"
       >
         フィードバック
       </button>
@@ -43,13 +55,19 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 w-80 bg-black/90 border border-white/10 rounded-xl shadow-2xl p-4 z-50 backdrop-blur-md">
+    <div className="fixed bottom-4 right-4 w-80 bg-black/95 border border-white/10 rounded-xl shadow-2xl p-4 z-50">
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-bold text-white text-sm">フィードバック</h3>
-        <button onClick={() => setOpen(false)} className="text-white/40 hover:text-white/70 transition-colors">&times;</button>
+        <h3 className="font-bold text-white">
+          フィードバック
+        </h3>
+        <button onClick={() => setOpen(false)} className="text-white/40 hover:text-white transition-colors text-sm">
+          閉じる
+        </button>
       </div>
       {sent ? (
-        <p className="text-emerald-400 text-center py-4 text-sm">送信しました！ありがとうございます</p>
+        <div className="text-emerald-400 text-center py-4">
+          <p>送信しました。ありがとうございます。</p>
+        </div>
       ) : (
         <>
           <div className="flex gap-2 mb-3">
@@ -57,11 +75,12 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
               <button
                 key={t}
                 onClick={() => setType(t)}
-                className={`px-3 py-1 rounded-full text-xs transition-colors ${
-                  type === t ? "bg-white/20 text-white" : "bg-white/5 text-white/50 hover:bg-white/10"
+                className={`px-3 py-1 rounded-full text-xs flex items-center gap-1.5 transition-all duration-200 ${
+                  type === t ? "bg-blue-500 text-white" : "bg-white/5 text-white/60 hover:bg-white/10"
                 }`}
               >
-                {t === "bug" ? "不具合" : t === "feature" ? "要望" : "その他"}
+                <span className={`inline-block w-1.5 h-1.5 rounded-full ${typeDots[t]}`} />
+                {typeLabels[t]}
               </button>
             ))}
           </div>
@@ -69,11 +88,11 @@ export function FeedbackWidget({ repoName }: { repoName: string }) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="ご意見をお聞かせください..."
-            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white placeholder:text-white/30 h-24 resize-none mb-3 focus:outline-none focus:border-white/20"
+            className="w-full border border-white/10 bg-white/5 text-white placeholder:text-white/40 rounded-lg p-2 text-sm h-24 resize-none mb-3 focus:outline-none focus:border-blue-400 transition-colors"
           />
           <button
             onClick={submit}
-            className="w-full bg-white/10 text-white py-2 rounded-lg text-sm hover:bg-white/20 transition-colors"
+            className="w-full bg-blue-500 text-white py-2 rounded-lg text-sm hover:bg-blue-600 transition-all duration-200"
           >
             送信
           </button>

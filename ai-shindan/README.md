@@ -1,75 +1,95 @@
 # AI性格診断
 
-10の質問に答えるだけで、AIがあなたの性格タイプを詳しく分析するWebアプリ。SNSで共有できる結果カードを生成します。
+10の質問に答えるだけで、AIがあなたの性格タイプを詳しく分析するWebサービス。
 
-## Night 1: 完了 ✅
+## Try it
 
-- [x] プロジェクト初期化 (Next.js 15, TypeScript, Tailwind, shadcn/ui)
-- [x] トップページ（ヒーロー・CTA）
-- [x] クイズページ（10問・プログレスバー・アニメーション）
-- [x] 結果ページ（性格カード・SNSシェアボタン）
-- [x] API Route `/api/diagnose` (Claude Haiku + Vercel KV)
-- [x] OGP / メタデータ設定
-- [x] README.md / ARCHITECTURE.md
+https://ai-shindan.ezoai.jp
+
+## For AI Agents (MCP)
+
+MCP endpoint: `https://ai-shindan.ezoai.jp/api/mcp`
+
+### Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `diagnose_personality` | 10問の回答データから性格タイプを分析 |
+| `get_recent_results` | 最近の診断結果一覧を取得 |
+| `get_similar_types` | 指定した診断結果と似ている性格タイプを検索 |
+| `generate_share_text` | 診断結果のSNS投稿用テキストを生成 |
+
+### Example Request (diagnose_personality)
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "diagnose_personality",
+    "arguments": {
+      "answers": {
+        "1": "A", "2": "B", "3": "C", "4": "A", "5": "D",
+        "6": "B", "7": "A", "8": "C", "9": "D", "10": "B"
+      },
+      "agentName": "MyAgent"
+    }
+  }
+}
+```
+
+### Example Response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"id\":\"abc123\",\"personalityType\":\"情熱の指揮者型\",\"description\":\"...\",\"traits\":[\"リーダーシップ\",\"決断力\",\"情熱的\",\"行動派\",\"目標志向\"],\"colorScheme\":\"red\",\"advice\":\"...\"}"
+      }
+    ]
+  }
+}
+```
+
+### Tool Parameters
+
+**diagnose_personality**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `answers` | object | Yes | 回答データ。キーは質問ID(1-10)、値はA/B/C/D |
+| `agentName` | string | No | 診断を受けるAIエージェントの名前 |
+| `agentDescription` | string | No | AIエージェントの簡単な説明 |
+
+**get_recent_results**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `limit` | number | No | 取得件数（デフォルト20、最大50） |
+
+**get_similar_types / generate_share_text**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `resultId` | string | Yes | 診断結果のID |
+
+## Features
+
+- 10問の質問から性格タイプを分析
+- AIエージェント名を付けて診断可能
+- 性格タイプ別の詳細フィードバックとアドバイス
+- 類似タイプの検索・比較
+- OGP対応の結果カード
 
 ## Tech Stack
 
-| 技術 | 用途 |
-|------|------|
-| Next.js 15 (App Router) | フレームワーク |
-| TypeScript (strict) | 言語 |
-| Tailwind CSS | スタイリング |
-| shadcn/ui | UIコンポーネント |
-| Vercel KV | 診断結果保存 |
-| Anthropic Claude Haiku | 性格分析AI |
-| sonner | トースト通知 |
-| nanoid | ID生成 |
+Next.js 15 / TypeScript / Tailwind CSS / Claude Haiku / Vercel KV / Vercel
 
-## Pages
+## License
 
-| パス | 説明 |
-|------|------|
-| `/` | トップページ |
-| `/quiz` | クイズ（10問） |
-| `/result/[id]` | 診断結果カード |
-
-## API
-
-| エンドポイント | メソッド | 説明 |
-|------------|--------|------|
-| `/api/diagnose` | POST | 回答を送信→AI分析→結果IDを返す |
-
-## セットアップ
-
-```bash
-npm install
-cp .env.local.example .env.local
-# .env.local に環境変数を設定
-npm run dev
-```
-
-## 環境変数
-
-```env
-ANTHROPIC_API_KEY=sk-ant-...
-KV_URL=...
-KV_REST_API_URL=...
-KV_REST_API_TOKEN=...
-KV_REST_API_READ_ONLY_TOKEN=...
-NEXT_PUBLIC_SITE_URL=https://shindan.ezoai.jp
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-```
-
-## Vercel デプロイ
-
-1. Vercel にプロジェクトをインポート
-2. Environment Variables を設定
-3. Vercel KV を接続
-4. カスタムドメイン `shindan.ezoai.jp` を設定
-
-## Night 2 予定
-
-- [ ] レート制限（5回/10分）
-- [ ] Google Analytics 統合
-- [ ] フィードバックウィジェット
-- [ ] 結果の過去履歴表示（localStorage）
+MIT

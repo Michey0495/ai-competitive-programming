@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "AIマシュマロ - AIが匿名質問に個性的に回答";
+export const alt = "AIマシュマロ -- AIが匿名質問に個性的に回答";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -17,72 +17,28 @@ export default function Image() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          position: "relative",
+          gap: 24,
         }}
       >
         <div
           style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 4,
-            background: "linear-gradient(90deg, #ec4899, #f472b6)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background:
-              "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(236,72,153,0.15), transparent)",
-          }}
-        />
-        <div
-          style={{
-            fontSize: 14,
-            color: "rgba(244,114,182,0.8)",
-            letterSpacing: "0.3em",
-            textTransform: "uppercase" as const,
-            fontFamily: "monospace",
-            marginBottom: 16,
-          }}
-        >
-          AI Marshmallow
-        </div>
-        <div
-          style={{
-            fontSize: 64,
-            fontWeight: 900,
+            fontSize: 56,
+            fontWeight: 700,
             color: "#ffffff",
-            letterSpacing: "-2px",
+            letterSpacing: "-1px",
           }}
         >
           AIマシュマロ
         </div>
         <div
           style={{
-            fontSize: 24,
-            color: "rgba(255,255,255,0.4)",
-            maxWidth: 600,
-            textAlign: "center" as const,
-            marginTop: 16,
+            fontSize: 28,
+            color: "rgba(255, 255, 255, 0.6)",
+            maxWidth: 720,
+            textAlign: "center",
           }}
         >
           匿名で質問するとAIが個性的に回答します
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            bottom: 32,
-            fontSize: 16,
-            color: "rgba(255,255,255,0.2)",
-          }}
-        >
-          ai-marshmallow.ezoai.jp
         </div>
       </div>
     ),

@@ -1,51 +1,44 @@
-# AIマシュマロ (ai-marshmallow)
+# AIマシュマロ
+
 > 匿名で質問するとAIキャラクター「マシュ」が個性的に回答するQ&Aサービス
 
-## URL
-https://ai-marshmallow.ezoai.jp
+## Overview
+AIマシュマロは匿名Q&AのWebアプリです。アカウント不要・完全無料で、AIキャラクター「マシュ」（Claude Haiku）が日本語で個性的に回答します。
 
-## 概要
-AIマシュマロは匿名Q&AのWebアプリです。アカウント不要・完全無料で、AIキャラクター「マシュ」が日本語で個性的に回答します。
-恋愛・仕事・日常の悩みなど、何でも匿名で質問できます。
+## Features
+- 匿名質問（アカウント不要）
+- AIキャラクター「マシュ」による個性的な回答
+- 回答のSNS共有（OGP対応）
+- レスポンシブデザイン
+
+## Technical Stack
+- Framework: Next.js 15 (App Router)
+- Language: TypeScript
+- Styling: Tailwind CSS + shadcn/ui
+- AI: Anthropic Claude API (claude-haiku-4-5)
+- Storage: Vercel KV
+- Hosting: Vercel
+
+## API
+- POST /api/questions - 質問を送信し、AIの回答を取得（REST）
+- POST /api/mcp - MCP Server エンドポイント（AI エージェント向け）
 
 ## MCP (Model Context Protocol)
+- Endpoint: https://ai-marshmallow.ezoai.jp/api/mcp
+- Transport: Streamable HTTP
+- Tools: ask（匿名質問の送信と回答取得）
+- Agent Card: https://ai-marshmallow.ezoai.jp/.well-known/agent.json
 
-### Endpoint
-POST https://ai-marshmallow.ezoai.jp/api/mcp
+## Pages
+- / : トップページ（質問フォーム）
+- /about : サービス紹介ページ
+- /q/[id] : 回答詳細ページ（共有用）
 
-### Protocol
-JSON-RPC 2.0 over HTTP POST (Content-Type: application/json)
+## Links
+- Website: https://ai-marshmallow.ezoai.jp
+- GitHub: https://github.com/Michey0495/ai-marshmallow
+- Agent Card: https://ai-marshmallow.ezoai.jp/.well-known/agent.json
 
-### Authentication
-不要（レート制限あり: 10リクエスト/10分）
-
-### 使用フロー
-
-Step 1: Initialize
-```json
-{"jsonrpc":"2.0","id":"1","method":"initialize","params":{}}
-```
-
-Step 2: List Tools
-```json
-{"jsonrpc":"2.0","id":"2","method":"tools/list","params":{}}
-```
-
-Step 3: Call Tool
-```json
-{"jsonrpc":"2.0","id":"3","method":"tools/call","params":{"name":"ask_question","arguments":{"question":"仕事のモチベーションが上がらないです"}}}
-```
-
-### Tools
-
-#### ask_question
-AIキャラクター「マシュ」に匿名で質問し、個性的な回答を得る。
-- question (string, required): 質問内容（最大280文字）
-- 戻り値: マシュからの回答テキスト
-
-### 制約
-- ask_question: レート制限 10回/10分
-- 質問: 最大280文字
-
-## Provider
-ezoai.jp - AIエージェント向けサービスプラットフォーム
+## Contact
+- Developer: Ghostfee
+- GitHub: https://github.com/Michey0495

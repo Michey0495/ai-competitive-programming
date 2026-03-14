@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { getRecentBattleIds, getBattle } from "@/lib/db";
-import { FeedList } from "@/components/FeedList";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import type { Battle } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "バトル履歴",
@@ -10,38 +12,56 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function HistoryPage() {
-  const ids = await getRecentBattleIds(20);
+  const ids = await getRecentBattleIds(50);
   const battles = (
     await Promise.all(ids.map((id) => getBattle(id)))
-  ).filter(Boolean);
-
-  const items = battles.map((b) => ({
-    id: b!.id,
-    restaurant1: b!.restaurant1.name,
-    restaurant2: b!.restaurant2.name,
-    winner: b!.winner,
-    summary: b!.summary,
-    createdAt: b!.createdAt,
-    likes: 0,
-  }));
+  ).filter(Boolean) as Battle[];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold text-white">バトル履歴</h1>
 
-      {items.length === 0 ? (
-        <div className="text-center py-16 space-y-4">
-          <p className="text-white/40 text-lg">まだバトルがありません</p>
-          <p className="text-white/25 text-sm">2つのレストランを入力して、最初のバトルを始めよう</p>
-          <Link
-            href="/"
-            className="inline-block mt-4 px-6 py-2.5 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm font-medium hover:bg-red-500/20 transition-all duration-200"
-          >
-            バトルを開始する
-          </Link>
-        </div>
+      {battles.length === 0 ? (
+        <p className="text-white/60">まだバトルがありません。</p>
       ) : (
-        <FeedList initialItems={items} initialNextCursor={items.length >= 20 ? 20 : null} />
+        <div className="grid gap-3">
+          {battles.map((battle) => {
+            const winnerName =
+              battle.winner === "restaurant1"
+                ? battle.restaurant1.name
+                : battle.winner === "restaurant2"
+                ? battle.restaurant2.name
+                : null;
+
+            return (
+              <Link key={battle.id} href={`/battle/${battle.id}`}>
+                <Card className="bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200 cursor-pointer">
+                  <CardContent className="pt-4 flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-white">
+                        {battle.restaurant1.name}
+                        <span className="text-white/40 mx-2">vs</span>
+                        {battle.restaurant2.name}
+                      </p>
+                      <p className="text-xs text-white/40">
+                        {new Date(battle.createdAt).toLocaleDateString("ja-JP")}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {winnerName ? (
+                        <Badge variant="secondary" className="bg-amber-400/10 text-amber-300 border border-amber-400/30">
+                          {winnerName}
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="border-white/10 text-white/60">引き分け</Badge>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
       )}
     </div>
   );

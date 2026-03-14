@@ -1,69 +1,63 @@
-# AI性格診断 (ai-shindan)
-> 10の質問に答えるだけでAIが性格タイプを分析するWebアプリ
+# AI自己分析
 
-## URL
-https://ai-shindan.ezoai.jp
+> AIが性格タイプ・能力値・二つ名を分析し、ビジュアルカード画像を生成する自己分析プラットフォーム
 
-## 概要
-AI性格診断は、10問の性格診断クイズに回答すると、AIが性格タイプ名・説明・特徴・アドバイスを生成するサービスです。
-結果はSNSでシェアでき、他のユーザーとの比較も可能です。
+## Overview
+AI自己分析は、2つのモード（10問クイズ / フリーフォーム入力）でAIが性格を多角的に分析し、能力値チャート・二つ名付きのビジュアルカード画像を生成するWebアプリです。タイプ統計データの蓄積・プロフィール保存機能も備えています。
 
-## MCP (Model Context Protocol)
+## Features
+- 10問の深層分析クイズ
+- フリーフォーム入力でのプロフカード即時生成
+- 能力値（5軸）レーダー分析
+- 二つ名・キャッチコピー自動生成
+- 1080x1080 ビジュアルカード画像生成（ダウンロード可）
+- OGP画像自動生成（SNSシェア最適化）
+- タイプ別統計データ蓄積・閲覧
+- プロフィール保存（分析履歴）
 
-### Endpoint
-POST https://ai-shindan.ezoai.jp/api/mcp
+## Technical Stack
+- Framework: Next.js 15 (App Router)
+- Language: TypeScript
+- Styling: Tailwind CSS + shadcn/ui
+- AI: Anthropic Claude / Together AI / Ollama (フォールバック)
+- Image: Next.js ImageResponse (zero API cost)
+- Storage: Vercel KV
+- Hosting: Vercel
 
-### Protocol
-JSON-RPC 2.0 over HTTP POST (Content-Type: application/json)
+## API
+- POST /api/diagnose - クイズ回答を送信し、AI分析結果を取得
+- POST /api/generate - フリーフォーム入力でプロフカード生成
+- GET /api/feed - 最近の分析結果一覧を取得
+- GET /api/stats - タイプ別統計データを取得
+- GET /api/similar/[id] - 類似タイプの結果を取得
+- GET /result/[id]/card-image - 1080x1080 PNG カード画像
 
-### Authentication
-不要（レート制限あり: 10リクエスト/10分）
+## MCP Tools
+MCP Server: https://ai-shindan.ezoai.jp/api/mcp (streamable-http)
 
-### 使用フロー
+- diagnose_personality - 10問の回答データから性格タイプ・能力値・二つ名を分析。画像カードURL付き
+- generate_profile_card - 名前と趣味からビジュアルプロフカードを生成。画像カードURL付き
+- get_type_statistics - 全診断データの性格タイプ分布・平均能力値・共通特徴を取得
+- get_recent_results - 最近の分析結果一覧を取得（フィード）
+- compare_results - 2つの分析結果を比較し、共通点・相違点を分析
+- get_profile_history - プロフィールの分析履歴を時系列で取得
 
-Step 1: Initialize
-```json
-{"jsonrpc":"2.0","id":"1","method":"initialize","params":{}}
-```
+## Pages
+- / : トップページ（2モード選択CTA）
+- /quiz : クイズページ（10問）
+- /create : フリーフォーム作成ページ
+- /result/[id] : 結果ページ（カード・能力値・シェア）
+- /stats : タイプ統計ダッシュボード
+- /feed : 最近の分析結果フィード
+- /profile/[id] : プロフィール履歴ページ
+- /result/[id]/similar : 類似タイプ一覧
 
-Step 2: List Tools
-```json
-{"jsonrpc":"2.0","id":"2","method":"tools/list","params":{}}
-```
+## Links
+- Website: https://ai-shindan.ezoai.jp
+- GitHub: https://github.com/Michey0495/ai-shindan
+- Agent Card: https://ai-shindan.ezoai.jp/.well-known/agent.json
+- MCP Server: https://ai-shindan.ezoai.jp/api/mcp
 
-Step 3: Call Tool
-```json
-{"jsonrpc":"2.0","id":"3","method":"tools/call","params":{"name":"diagnose_personality","arguments":{"answers":{"1":"A","2":"B","3":"C","4":"A","5":"D","6":"B","7":"A","8":"C","9":"B","10":"D"}}}}
-```
-
-### Tools
-
-#### diagnose_personality
-10問の回答から性格タイプを分析する。
-- answers (object, required): {"1":"A","2":"B",...,"10":"D"} 形式の回答
-- agentName (string, optional): 診断を受けるエージェント名
-- agentDescription (string, optional): エージェントの説明
-- 戻り値: 性格タイプ、説明、特徴、アドバイス、結果URL
-
-#### get_recent_results
-最近の診断結果一覧を取得する。
-- limit (number, optional): 取得件数（デフォルト20、最大50）
-- 戻り値: 診断結果の配列
-
-#### get_similar_types
-指定した結果と類似する性格タイプを探す。
-- resultId (string, required): 診断結果ID
-- 戻り値: 類似結果の配列
-
-#### generate_share_text
-SNS投稿用テキストを生成する。
-- resultId (string, required): 診断結果ID
-- 戻り値: シェア用テキスト
-
-### 制約
-- diagnose_personality: レート制限 10回/10分
-- 回答の値: A/B/C/D のいずれか
-- 質問ID: 1-10
-
-## Provider
-ezoai.jp - AIエージェント向けサービスプラットフォーム
+## Contact
+- Developer: Ghostfee
+- GitHub: https://github.com/Michey0495

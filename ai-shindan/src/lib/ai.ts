@@ -12,7 +12,20 @@ const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const TOGETHER_API_KEY = process.env.TOGETHER_API_KEY;
 
 export async function callAI(prompt: string): Promise<string> {
-  // Together AI (primary)
+  // Anthropic (primary)
+  if (ANTHROPIC_API_KEY) {
+    const Anthropic = (await import("@anthropic-ai/sdk")).default;
+    const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+    const message = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1024,
+      messages: [{ role: "user", content: prompt }],
+    });
+    const block = message.content[0];
+    return block.type === "text" ? block.text : "";
+  }
+
+  // Together AI (fallback)
   if (TOGETHER_API_KEY) {
     const res = await fetch("https://api.together.xyz/v1/chat/completions", {
       method: "POST",
@@ -49,19 +62,6 @@ export async function callAI(prompt: string): Promise<string> {
       return data.message?.content ?? "";
     }
   } catch {}
-
-  // Anthropic fallback
-  if (ANTHROPIC_API_KEY) {
-    const Anthropic = (await import("@anthropic-ai/sdk")).default;
-    const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
-    const message = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    });
-    const block = message.content[0];
-    return block.type === "text" ? block.text : "";
-  }
 
   throw new Error("AI backend unavailable");
 }

@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { RoastResult } from "@/types";
 import { ShareButtons } from "@/components/ShareButtons";
-import { LikeButton } from "@/components/LikeButton";
 import Link from "next/link";
 
 type Props = { params: Promise<{ id: string }> };
@@ -44,33 +43,41 @@ export default async function ResultPage({ params }: Props) {
   const shareText = `AIにロースト（毒舌ツッコミ）されました\n\n${result.roast.slice(0, 80)}...\n\nあなたもやってみる`;
 
   return (
-    <div className="min-h-screen">
+    <main className="min-h-screen">
       <div className="max-w-2xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
-          <p className="text-orange-400 text-sm font-bold mb-2">{"// ROAST"}</p>
+          <div className="flex justify-center mb-2">
+            <span className="text-3xl font-black text-orange-400 tracking-tight">//</span>
+          </div>
           <h1 className="text-2xl font-black text-white">
             {result.input.name}さんへのロースト
           </h1>
         </div>
 
+        {/* Result Card */}
         <div
           id="roast-card"
-          className="bg-white/5 rounded-xl border border-white/10 p-8 mb-6"
+          className="bg-white/5 rounded-xl p-8 mb-6 border border-white/10"
         >
-          <div className="mb-6">
-            <p className="font-black text-xl text-white">
-              {result.input.name}
-            </p>
-            {result.input.job && (
-              <p className="text-sm text-white/40 mt-1">{result.input.job}</p>
-            )}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 rounded bg-orange-500/20 flex items-center justify-center shrink-0">
+              <span className="text-orange-400 font-black text-sm">#</span>
+            </div>
+            <div>
+              <p className="font-black text-xl text-white">
+                {result.input.name}
+              </p>
+              {result.input.job && (
+                <p className="text-sm text-white/60">{result.input.job}</p>
+              )}
+            </div>
           </div>
 
           <div className="space-y-3">
             {lines.map((line, i) => (
               <p
                 key={i}
-                className="text-white/70 leading-relaxed text-base border-l-4 border-orange-500/50 pl-4"
+                className="text-white/90 leading-relaxed text-base border-l-4 border-orange-400/60 pl-4"
               >
                 {line}
               </p>
@@ -78,13 +85,9 @@ export default async function ResultPage({ params }: Props) {
           </div>
 
           <div className="mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
-            <span className="text-xs text-white/30">by AIロースト</span>
-            <span className="text-xs text-white/20">roast.ezoai.jp</span>
+            <span className="text-xs text-white/40">by AI ROAST</span>
+            <span className="text-xs text-white/40">roast.ezoai.jp</span>
           </div>
-        </div>
-
-        <div className="flex items-center gap-3 mb-4">
-          <LikeButton id={id} />
         </div>
 
         <ShareButtons shareUrl={shareUrl} shareText={shareText} name={result.input.name} />
@@ -92,12 +95,12 @@ export default async function ResultPage({ params }: Props) {
         <div className="mt-8 text-center">
           <Link
             href="/"
-            className="inline-block bg-orange-500 text-black font-bold px-8 py-3 rounded-lg hover:bg-orange-400 transition-all duration-200 cursor-pointer"
+            className="inline-flex items-center gap-2 bg-orange-500 text-white font-bold px-8 py-3 rounded-lg hover:bg-orange-600 transition-all duration-200 cursor-pointer"
           >
             自分もローストされる
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

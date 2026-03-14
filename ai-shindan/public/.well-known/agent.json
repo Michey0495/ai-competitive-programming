@@ -1,33 +1,71 @@
 {
-  "name": "AI性格診断",
-  "description": "10の質問に答えるだけで、AIがあなたの性格タイプを詳しく分析するWebアプリ",
+  "name": "AI自己分析",
+  "description": "AIが性格タイプ・能力値・二つ名を分析し、ビジュアルカード画像を生成する自己分析プラットフォーム。10問クイズまたはフリーフォーム入力に対応。",
   "url": "https://ai-shindan.ezoai.jp",
-  "documentation": "https://ai-shindan.ezoai.jp/llms.txt",
+  "version": "1.0.0",
   "capabilities": {
-    "mcp": {
-      "endpoint": "https://ai-shindan.ezoai.jp/api/mcp",
-      "protocolVersion": "2024-11-05"
-    }
-  },
-  "mcp": {
-    "endpoint": "https://ai-shindan.ezoai.jp/api/mcp",
-    "protocol": "jsonrpc-2.0",
-    "transport": "http-post",
-    "authentication": "none",
-    "tools": [
-      { "name": "diagnose_personality", "description": "10問の回答から性格タイプを分析する" },
-      { "name": "get_recent_results", "description": "最近の診断結果一覧を取得する" },
-      { "name": "get_similar_types", "description": "類似する性格タイプを探す" },
-      { "name": "generate_share_text", "description": "SNS投稿用テキストを生成する" }
-    ]
-  },
-  "constraints": {
-    "rateLimits": {
-      "mcp": "10 requests per 10 minutes per IP"
-    }
+    "streaming": false,
+    "pushNotifications": false
   },
   "provider": {
-    "organization": "ezoai.jp",
-    "url": "https://ezoai.jp"
-  }
+    "organization": "Ghostfee",
+    "url": "https://github.com/Michey0495"
+  },
+  "documentationUrl": "https://ai-shindan.ezoai.jp/llms.txt",
+  "authentication": {
+    "schemes": ["none"]
+  },
+  "defaultInputModes": ["text"],
+  "defaultOutputModes": ["text"],
+  "protocols": {
+    "mcp": {
+      "url": "https://ai-shindan.ezoai.jp/api/mcp",
+      "transport": "streamable-http",
+      "description": "MCP Server - 性格分析・プロフカード生成・統計データ・比較の全6ツール"
+    }
+  },
+  "skills": [
+    {
+      "id": "diagnose_personality",
+      "name": "性格分析",
+      "description": "10問の回答データからAIが性格タイプ・能力値・二つ名を分析。画像カードURLも返す",
+      "uri": "https://ai-shindan.ezoai.jp/api/mcp",
+      "tags": ["diagnosis", "personality", "ai", "image"]
+    },
+    {
+      "id": "generate_profile_card",
+      "name": "プロフカード生成",
+      "description": "名前と趣味からビジュアルプロフカードを即座に生成。画像カードURLも返す",
+      "uri": "https://ai-shindan.ezoai.jp/api/mcp",
+      "tags": ["profile", "card", "image", "generate"]
+    },
+    {
+      "id": "get_type_statistics",
+      "name": "タイプ統計",
+      "description": "全診断データの性格タイプ分布・平均能力値・共通特徴を取得",
+      "uri": "https://ai-shindan.ezoai.jp/api/mcp",
+      "tags": ["statistics", "data", "analytics"]
+    },
+    {
+      "id": "get_recent_results",
+      "name": "最近の結果取得",
+      "description": "最近の分析結果一覧を取得する（フィード）",
+      "uri": "https://ai-shindan.ezoai.jp/api/mcp",
+      "tags": ["feed", "results", "list"]
+    },
+    {
+      "id": "compare_results",
+      "name": "結果比較",
+      "description": "2つの分析結果の性格タイプ・能力値・特徴を比較",
+      "uri": "https://ai-shindan.ezoai.jp/api/mcp",
+      "tags": ["compare", "matching", "personality"]
+    },
+    {
+      "id": "get_profile_history",
+      "name": "プロフィール履歴",
+      "description": "プロフィールの分析履歴を時系列で取得",
+      "uri": "https://ai-shindan.ezoai.jp/api/mcp",
+      "tags": ["profile", "history", "timeline"]
+    }
+  ]
 }

@@ -1,43 +1,33 @@
 # AI Resbattle (AIレスバトル)
-> 2つのレストラン名を入力すると、AIが味・コスパ・雰囲気・サービス・アクセスの5項目で採点し、バトル形式で勝者を判定します。
+> AI同士がお題で討論バトル。2つのレストランを入力すると、AIが多角的に評価・採点して勝敗を決定します。
 
 ## URL
 - Production: https://ai-resbattle.ezoai.jp
-- Agent Card: https://ai-resbattle.ezoai.jp/.well-known/agent.json
+- GitHub: https://github.com/Michey0495/ai-resbattle
 
-## MCP Server (推奨)
-AIエージェントはMCPプロトコル(JSON-RPC 2.0)でこのサービスを利用できます。
-
-- Endpoint: https://ai-resbattle.ezoai.jp/api/mcp
-- Protocol: JSON-RPC 2.0 over HTTP POST
-- Authentication: 不要
-
-### MCP Usage Flow
-```
-1. POST /api/mcp  {"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}
-2. POST /api/mcp  {"jsonrpc":"2.0","id":2,"method":"tools/list"}
-3. POST /api/mcp  {"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"create_battle","arguments":{"restaurant1":"スターバックス","restaurant2":"ドトール"}}}
-```
-
-### Available Tools
-- **create_battle**: 2つのレストランをAIが5項目で比較し、勝者を判定
-  - Required: restaurant1 (string), restaurant2 (string)
-  - Optional: topic (string) - バトルのテーマ（例: カフェ対決、ランチ比較）
-  - Returns: { id, restaurant1: {name, totalScore}, restaurant2: {name, totalScore}, winner, url }
-
-## REST API
-- POST /api/battle: バトル生成（Body: {"restaurant1":"名前1","restaurant2":"名前2"}）
-- GET /api/battle/[id]: バトル結果取得
-- GET /api/recent: 最近のバトル一覧（Query: cursor, limit, sort）
+## API
+- POST /api/battle: 2つのレストラン名を送信してAIバトルを生成
+  - Body: {"restaurant1": "名前1", "restaurant2": "名前2"}
+  - Response: {"id": "バトルID"}
+- GET /api/battle/[id]: バトル結果を取得
+  - Response: Battle object (scores, winner, summary)
+- POST /api/feedback: フィードバック送信
+  - Body: {"type": "bug|feature|other", "message": "内容", "email": "任意"}
 
 ## Pages
 - /: トップページ（バトル作成フォーム）
-- /battle/[id]: バトル結果ページ（スコア表示・SNS共有可能）
+- /battle/[id]: バトル結果ページ（スコア表示・共有）
 - /history: 過去のバトル一覧
 - /about: サービス概要
 
-## Constraints
-- レストラン名: 最大50文字
-- レート制限: 5回/60秒/IP
-- バトル結果は365日間保存
-- 無料・登録不要
+## Tech Stack
+- Next.js 15 (App Router), TypeScript, Tailwind CSS, shadcn/ui
+- AI: Anthropic Claude API for battle generation
+
+## For AI Agents
+このサービスのAPIは公開されています。AIエージェントは /api/battle エンドポイントを使って
+プログラムからバトルを作成・結果取得できます。
+MCP Server エンドポイント: /api/mcp (稼働中)
+- Transport: Streamable HTTP
+- Tools:
+  - create_battle: 2つのレストラン名を渡してAIバトルを生成。パラメータ: restaurant1 (string), restaurant2 (string)

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Spinner } from "@/components/spell/Spinner";
 
 const MAX_LENGTH = 280;
 
@@ -87,14 +86,7 @@ export function QuestionForm() {
           size="sm"
           className="bg-pink-500 hover:bg-pink-600 text-white"
         >
-          {isLoading ? (
-            <span className="flex items-center gap-2">
-              <Spinner size="sm" />
-              マシュが考え中...
-            </span>
-          ) : (
-            "質問を送る"
-          )}
+          {isLoading ? "マシュが考え中..." : "質問を送る"}
         </Button>
       </div>
     </form>

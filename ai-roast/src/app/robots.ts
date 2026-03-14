@@ -1,14 +1,9 @@
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://roast.ezoai.jp";
   return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: ["/", "/api/mcp"],
-        disallow: ["/api/roast", "/api/feedback", "/api/like", "/api/feed"],
-      },
-    ],
-    sitemap: "https://ai-roast.ezoai.jp/sitemap.xml",
+    rules: { userAgent: "*", allow: "/" },
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }

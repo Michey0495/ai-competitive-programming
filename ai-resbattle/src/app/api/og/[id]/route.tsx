@@ -37,166 +37,83 @@ export async function GET(
           padding: "40px",
         }}
       >
-        {/* Top gradient accent */}
         <div
           style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: "200px",
-            background:
-              "radial-gradient(ellipse 80% 100% at 50% -20%, rgba(239,68,68,0.3), transparent)",
-          }}
-        />
-
-        <div
-          style={{
-            fontSize: 20,
-            color: "rgba(239,68,68,0.7)",
-            marginBottom: 32,
+            fontSize: 28,
+            color: "#60a5fa",
+            marginBottom: 24,
             fontWeight: "bold",
-            letterSpacing: "0.2em",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
           }}
         >
-          AI RES BATTLE
+          AIレスバトル
         </div>
 
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "28px",
-            marginBottom: "36px",
+            gap: "24px",
+            marginBottom: "32px",
           }}
         >
-          {/* Restaurant 1 */}
           <div
             style={{
-              background: "rgba(59,130,246,0.1)",
-              border: "2px solid rgba(59,130,246,0.4)",
+              background: "rgba(59,130,246,0.2)",
+              border: "2px solid rgba(96,165,250,0.5)",
               borderRadius: "16px",
-              padding: "20px 32px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              minWidth: "240px",
+              padding: "16px 28px",
+              color: "#93c5fd",
+              fontSize: 32,
+              fontWeight: "bold",
+              textAlign: "center",
+              maxWidth: "280px",
             }}
           >
-            <div
-              style={{
-                color: "#93c5fd",
-                fontSize: 30,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              {restaurant1.name}
-            </div>
-            <div
-              style={{
-                fontSize: 48,
-                fontWeight: "900",
-                color: "#ffffff",
-                marginTop: 8,
-              }}
-            >
-              {restaurant1.totalScore}
-              <span style={{ fontSize: 20, color: "rgba(255,255,255,0.4)" }}>
-                pts
-              </span>
+            {restaurant1.name}
+            <div style={{ fontSize: 20, marginTop: 8, color: "#bfdbfe" }}>
+              {restaurant1.totalScore}点
             </div>
           </div>
 
-          {/* VS */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <div
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #ef4444, #dc2626)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 0 40px rgba(239,68,68,0.4)",
-              }}
-            >
-              <span
-                style={{ color: "#fff", fontSize: 24, fontWeight: "900" }}
-              >
-                VS
-              </span>
-            </div>
+          <div style={{ color: "#e2e8f0", fontSize: 40, fontWeight: "bold" }}>
+            VS
           </div>
 
-          {/* Restaurant 2 */}
           <div
             style={{
-              background: "rgba(249,115,22,0.1)",
-              border: "2px solid rgba(249,115,22,0.4)",
+              background: "rgba(249,115,22,0.2)",
+              border: "2px solid rgba(251,146,60,0.5)",
               borderRadius: "16px",
-              padding: "20px 32px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              minWidth: "240px",
+              padding: "16px 28px",
+              color: "#fdba74",
+              fontSize: 32,
+              fontWeight: "bold",
+              textAlign: "center",
+              maxWidth: "280px",
             }}
           >
-            <div
-              style={{
-                color: "#fdba74",
-                fontSize: 30,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              {restaurant2.name}
-            </div>
-            <div
-              style={{
-                fontSize: 48,
-                fontWeight: "900",
-                color: "#ffffff",
-                marginTop: 8,
-              }}
-            >
-              {restaurant2.totalScore}
-              <span style={{ fontSize: 20, color: "rgba(255,255,255,0.4)" }}>
-                pts
-              </span>
+            {restaurant2.name}
+            <div style={{ fontSize: 20, marginTop: 8, color: "#fed7aa" }}>
+              {restaurant2.totalScore}点
             </div>
           </div>
         </div>
 
-        {/* Winner */}
         <div
           style={{
-            background: "rgba(234,179,8,0.1)",
-            border: "2px solid rgba(234,179,8,0.4)",
+            background: "rgba(251,191,36,0.15)",
+            border: "2px solid rgba(251,191,36,0.4)",
             borderRadius: "12px",
-            padding: "14px 40px",
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
+            padding: "16px 32px",
+            color: "#fbbf24",
+            fontSize: 28,
+            fontWeight: "bold",
           }}
         >
-          <span
-            style={{ color: "#fde047", fontSize: 24, fontWeight: "900" }}
-          >
-            WINNER:
-          </span>
-          <span
-            style={{ color: "#ffffff", fontSize: 24, fontWeight: "bold" }}
-          >
-            {winnerName}
-          </span>
+          勝者: {winnerName}
         </div>
       </div>
     ),
