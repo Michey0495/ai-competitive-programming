@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : "引き分け";
 
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ?? "https://resbattle.ezoai.jp";
+    process.env.NEXT_PUBLIC_BASE_URL ?? "https://ai-resbattle.ezoai.jp";
   const ogImageUrl = `${baseUrl}/api/og/${id}`;
 
   return {
@@ -48,7 +48,7 @@ export default async function BattlePage({ params }: Props) {
   if (!battle) notFound();
 
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ?? "https://resbattle.ezoai.jp";
+    process.env.NEXT_PUBLIC_BASE_URL ?? "https://ai-resbattle.ezoai.jp";
   const url = `${baseUrl}/battle/${id}`;
 
   return (

@@ -46,7 +46,7 @@ export function LikeButton({ id }: { id: string }) {
           : "bg-white/5 text-white/70 border border-white/10 hover:bg-white/10"
       }`}
     >
-      <span>{liked ? "+" : "+"}</span>
+      <span>{liked ? "OK" : "+"}</span>
       <span>{count}</span>
     </button>
   );

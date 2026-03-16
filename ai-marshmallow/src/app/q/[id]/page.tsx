@@ -43,10 +43,10 @@ export default async function QAPage({ params }: Props) {
 
   const others = recentQuestions.filter((q) => q.id !== id).slice(0, 3);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai.ezoai.jp";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-marshmallow.ezoai.jp";
   const pageUrl = `${siteUrl}/q/${id}`;
   const answerSnippet = question.answer.slice(0, 50).replace(/\n/g, " ");
-  const shareText = `マシュに聞いてみた\n\nQ: ${question.content.slice(0, 40)}\nA: ${answerSnippet}...\n\n匿名で何でも聞けるAI -> ai.ezoai.jp`;
+  const shareText = `マシュに聞いてみた\n\nQ: ${question.content.slice(0, 40)}\nA: ${answerSnippet}...\n\n匿名で何でも聞けるAI -> ai-marshmallow.ezoai.jp`;
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 space-y-8">

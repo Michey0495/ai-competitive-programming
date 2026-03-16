@@ -13,17 +13,20 @@ export async function GET(request: NextRequest) {
     const sort = searchParams.get("sort") || "new";
 
     const feedKey = sort === "popular" ? "interview:popular" : "interview:feed";
-    const ids = await kv.zrange(feedKey, cursor, cursor + limit, { rev: true });
+    const ids = await kv.zrange(feedKey, cursor, cursor + limit + 1, { rev: true });
 
     if (!ids || ids.length === 0) {
       return NextResponse.json({ items: [], nextCursor: null });
     }
 
+    const hasMore = ids.length > limit;
+    const pageIds = hasMore ? ids.slice(0, limit) : ids;
+
     const results = await Promise.all(
-      ids.map((id) => kv.get<InterviewResult>(`interview:${id}`))
+      pageIds.map((id) => kv.get<InterviewResult>(`interview:${id}`))
     );
 
-    const likeKeys = ids.map((id) => `likes:interview:${id}`);
+    const likeKeys = pageIds.map((id) => `likes:interview:${id}`);
     const likeCounts = await kv.mget<(number | null)[]>(...likeKeys);
 
     const feedItems = results
@@ -39,7 +42,7 @@ export async function GET(request: NextRequest) {
         likes: likeCounts[i] ?? 0,
       }));
 
-    const nextCursor = ids.length === limit + 1 ? cursor + limit : null;
+    const nextCursor = hasMore ? cursor + limit : null;
 
     return NextResponse.json({ items: feedItems, nextCursor });
   } catch (error) {

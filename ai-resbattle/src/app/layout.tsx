@@ -44,7 +44,7 @@ export const metadata: Metadata = {
       "2つのレストランをAIが5項目で徹底比較！バトル形式で勝者を判定します。登録不要・完全無料。",
     images: [
       {
-        url: `${baseUrl}/og-image.png`,
+        url: `${baseUrl}/opengraph-image`,
         width: 1200,
         height: 630,
         alt: "AIレスバトル - AIがレストランを比較・判定",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     title: "AIレスバトル - 2つのレストランをAIが比較",
     description:
       "2つのレストランをAIが5項目で徹底比較！バトル形式で勝者を判定します。",
-    images: [`${baseUrl}/og-image.png`],
+    images: [`${baseUrl}/opengraph-image`],
   },
   robots: {
     index: true,
